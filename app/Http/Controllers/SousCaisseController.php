@@ -30,7 +30,7 @@ class SousCaisseController extends Controller
         ];
 
         $validator = Validator::make($request->all(),[
-            'nom' => ['required','unique:pays'],
+            'nom' => ['required','unique:sous_caisse'],
             'ville' => ['required'],
             'quartier' => ['required'],
         ], $error_messages);

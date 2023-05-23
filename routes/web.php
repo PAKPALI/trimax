@@ -29,9 +29,11 @@ Route::group(['prefix' => 'pays'], function () {
 Route::group(['prefix' => 'caisse'], function () {
     // Get
     Route::get('depot', [CaisseController::class, "depot"])->name('caisse.depot');
+    Route::get('retrait', [CaisseController::class, "retrait"])->name('caisse.retrait');
 
     //post
     Route::post('depot', [CaisseController::class, "ajoutDepot"]);
+    Route::post('retrait', [CaisseController::class, "ajoutRetrait"]);
 });
 
 

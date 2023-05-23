@@ -25,7 +25,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>DEPOT</h1>
+                <h1>RETRAIT</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -43,18 +43,22 @@
 
             <div class="col-md-12">
 
-                <div class="card card-primary">
+                <div class="card card-danger">
                     <div class="card-header">
                         <h3 class="card-title"><small></small></h3>
                     </div>
 
-                    <form id="depot">
+                    <form id="retrait">
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="exampleInputText0">Banque</label>
-                                <input type="text" name="banque" class="form-control" id="exampleInputText0"
-                                    placeholder="Enter le nom de la banque">
+                                <label>Selectionnez sous caisse</label>
+                                <select class="form-control select2" name="selection" style="width: 100%;">
+                                    <option value="" selected="selected"></option>
+                                    @foreach($SousCaisse as $sc)
+                                        <option value="{{$sc -> id}}">{{strtoupper($sc -> nom)}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputText1">Somme</label>
@@ -85,14 +89,14 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Valider</button>
+                            <button type="submit" class="btn btn-danger">Valider</button>
                         </div>
                     </form>
                 </div>
 
                 <div class="card mt-5">
-                    <div class="card-header bg-primary">
-                        <h2 class="card-title">LISTE DES OPERATIONS DE DEPOT</h2>
+                    <div class="card-header bg-danger">
+                        <h2 class="card-title">LISTE DES OPERATIONS DE RETRAIT</h2>
                     </div>
 
                     <div class="card-body">
@@ -101,7 +105,7 @@
                                 <tr>
                                     <th>N*</th>
                                     <th>Somme</th>
-                                    <th>Banque</th>
+                                    <th>Sous caisse</th>
                                     <th>Description</th>
                                     <th>Date</th>
                                 </tr>
@@ -114,8 +118,8 @@
                                 @foreach($Operation as $op)
                                     <tr>
                                         <td>{{$op->id}}</td>
-                                        <td class="text-primary">+{{$op->somme}}</td>
-                                        <td>{{$op->banque}}</td>
+                                        <td class="text-danger">-{{$op->somme}}</td>
+                                        <td>{{$op->sous_caisse}}</td>
                                         <td>{{$op->desc}}</td>
                                         <td>{{$op->created_at}}</td>
                                     </tr>
@@ -139,14 +143,14 @@ $('#loader').hide();
 $(function() {
     $('#loader').hide();
     //Ajax pour ajouter depot
-    $('#depot').submit(function() {
+    $('#retrait').submit(function() {
         event.preventDefault();
         $('#loader').fadeIn();
         $.ajax({
             type: 'POST',
-            url: 'depot',
+            url: 'retrait',
             //enctype: 'multipart/form-data',
-            data: $('#depot').serialize(),
+            data: $('#retrait').serialize(),
             datatype: 'json',
             success: function(data) {
                 console.log(data)
