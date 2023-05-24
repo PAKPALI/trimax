@@ -41,6 +41,7 @@ Route::group(['prefix' => 'caisse'], function () {
 Route::group(['prefix' => 'sous_caisse'], function () {
     // Get
     Route::get('', [SousCaisseController::class, "sous_caisse"])->name('sous_caisse');
+    Route::get('historique_operation', [SousCaisseController::class, "historique"])->name('sous_caisse.historique');
 
     //post
     Route::post('ajouter', [SousCaisseController::class, "ajouter"]);

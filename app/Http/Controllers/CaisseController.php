@@ -6,6 +6,7 @@ use App\Models\Caisse;
 use App\Models\SousCaisse;
 use Illuminate\Http\Request;
 use App\Models\OperationCaisse;
+use App\Models\OperationSousCaisse;
 use Illuminate\Support\Facades\Validator;
 
 class CaisseController extends Controller
@@ -196,12 +197,17 @@ class CaisseController extends Controller
                             $sousCaisse -> update([
                                 'somme' => $nouvelleQuantiteSousCaisse,
                             ]);
-                            // enrgistrer loperation
+                            // enregistrer loperation a la caisse
                             OperationCaisse::create([
                                 'somme' => $request-> somme,
                                 'type_op' => "RETRAIT",
                                 'sous_caisse' => $sousCaisse-> nom,
                                 'desc' => $request-> desc,
+                            ]);
+                            // enregistrer loperation a la sous caisse
+                            $sousCaisse->operation()->create([
+                                'nom_sous_caisse' => $sousCaisse->nom,
+                                'somme' => $request-> somme,
                             ]);
                             // envoyez une reponse
                             return response()->json([

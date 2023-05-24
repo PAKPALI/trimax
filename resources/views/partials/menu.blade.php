@@ -77,7 +77,7 @@
               <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Historique des opérations</p>
+                  <p>Historique opérations</p>
                 </a>
               </li>
             </ul>
@@ -107,9 +107,15 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{route('sous_caisse.historique')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Historique opérations</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Historique des dépenses</p>
+                  <p>Historique dépenses</p>
                 </a>
               </li>
             </ul>

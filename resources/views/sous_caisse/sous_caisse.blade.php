@@ -131,9 +131,12 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $n = 1
+                                @endphp
                                 @foreach($SC as $sc)
                                 <tr>
-                                    <td>{{$sc->id}}</td>
+                                    <td>{{$n++}}</td>
                                     <td>{{strtoupper($sc->nom)}}</td>
                                     <td>{{strtoupper($sc->pays->nom)}}</td>
                                     <td>{{strtoupper($sc->ville)}}</td>

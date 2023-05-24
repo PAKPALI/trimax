@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pays;
 use App\Models\SousCaisse;
 use Illuminate\Http\Request;
+use App\Models\OperationSousCaisse;
 use Illuminate\Support\Facades\Validator;
 
 class SousCaisseController extends Controller
@@ -30,7 +31,7 @@ class SousCaisseController extends Controller
         ];
 
         $validator = Validator::make($request->all(),[
-            'nom' => ['required','unique:sous_caisse'],
+            'nom' => ['required','unique:sous_caisses'],
             'ville' => ['required'],
             'quartier' => ['required'],
         ], $error_messages);
@@ -46,7 +47,8 @@ class SousCaisseController extends Controller
         $pays = Pays::find($pays_id);
 
         if($pays_id){
-            $pays->sousCaisse()->create([
+            SousCaisse::create([
+                'pays_id' => $pays_id ,
                 'nom' => $request-> nom,
                 'ville' => $request-> ville,
                 'quartier' => $request-> quartier,
@@ -149,4 +151,23 @@ class SousCaisseController extends Controller
         }
     }
 
+    public function historique()
+    {
+        $sousCaisse = SousCaisse::first();
+        $somme_init = 0;
+
+        $Operation = OperationSousCaisse::all();
+
+        if($sousCaisse){
+            return view('sous_caisse.historique',[
+                'somme' => $sousCaisse->somme,
+                'Operation' => $Operation,
+            ]);
+        }else{
+            return view('sous_caisse.historique',[
+                'somme' => $somme_init,
+                'Operation' => $Operation,
+            ]);
+        }
+    }
 }
