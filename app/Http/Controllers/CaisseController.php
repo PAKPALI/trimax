@@ -255,7 +255,7 @@ class CaisseController extends Controller
                 "status" => false,
                 "redirect_to" => '',
                 "title" => "DEPOT ECHOUE",
-                "msg" => "Choisissez la sous agence"
+                "msg" => "Choisissez la sous caisse"
             ]);
         }
     }

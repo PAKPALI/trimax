@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use App\Models\Pays;
+use App\Models\Depense;
+use App\Models\OperationSousCaisse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\OperationSousCaisse;
 
 class SousCaisse extends Model
 {
@@ -19,5 +20,9 @@ class SousCaisse extends Model
 
     public function operation(){
         return $this->hasMany(OperationSousCaisse::class);
+    }
+
+    public function depense(){
+        return $this->hasMany(Depense::class);
     }
 }

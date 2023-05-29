@@ -23,6 +23,7 @@ return array(
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Models\\Caisse' => $baseDir . '/app/Models/Caisse.php',
+    'App\\Models\\Depense' => $baseDir . '/app/Models/Depense.php',
     'App\\Models\\OperationCaisse' => $baseDir . '/app/Models/OperationCaisse.php',
     'App\\Models\\OperationSousCaisse' => $baseDir . '/app/Models/OperationSousCaisse.php',
     'App\\Models\\Pays' => $baseDir . '/app/Models/Pays.php',

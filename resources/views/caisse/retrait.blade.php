@@ -142,7 +142,7 @@
 $('#loader').hide();
 $(function() {
     $('#loader').hide();
-    //Ajax pour ajouter depot
+    //Ajax pour faire retrait
     $('#retrait').submit(function() {
         event.preventDefault();
         $('#loader').fadeIn();

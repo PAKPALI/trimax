@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pays;
+use App\Models\Depense;
 use App\Models\SousCaisse;
 use Illuminate\Http\Request;
 use App\Models\OperationSousCaisse;
@@ -19,6 +20,86 @@ class SousCaisseController extends Controller
             'SC' => $SousCaisse,
             'Pays' => $Pays,
         ]);
+    }
+
+    public function demande_depense()
+    {
+        $SousCaisse = SousCaisse::all();
+        $Depense = Depense::all();
+        
+
+        return view('sous_caisse.demande_depense',[
+            'SC' => $SousCaisse,
+            'Depense' => $Depense,
+        ]);
+    }
+
+    public function demande_depense_post(Request $request)
+    {
+        $error_messages = [
+            "selection.required" => "Choisissez la sous caisse!",
+            "somme.required" => "Saisissez la somme!",
+            "somme.numeric" => "La somme doit etre numerique!",
+            "confirmersomme.required" => "Confirmer la somme!",
+            "confirmersomme.numeric" => "La somme doit etre numerique!",
+            "type.required" => "Saisissez la description!",
+            // "desc.required" => "Saisissez la description!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'selection' => ['required'],
+            'somme' => ['required','numeric'],
+            'confirmersomme' => ['required','numeric'],
+            'type' => ['required'],
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+            "status" => false,
+            "reload" => false,
+            "title" => "AJOUT ECHOUE",
+            "msg" => $validator->errors()->first()]);
+
+        // requete sur la sous caisse
+        $sousCaisse = SousCaisse::find($request-> selection);
+
+        // on verifie voir si les sommes sont positives
+        if($request-> somme >=0){
+            // on verifie voir si les sommes sont identiques
+            if($request-> somme == $request-> confirmersomme){
+                // enregistrer la depense
+                Depense::create([
+                    'sous_caisse_id' => $request-> selection,
+                    'somme' => $request-> somme,
+                    'type' => $request-> type,
+                    'desc' => $request-> desc,
+                ]);
+                // envoyez une reponse
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('sous_caisse.demande_depense'),
+                    "title" => "DEMANDE REUSSIE",
+                    "msg" => "Veuillez consultez la liste en dessous!"
+                ]);
+                
+            }else{
+                return response()->json([
+                    "status" => false,
+                    "redirect_to" => '',
+                    "title" => "DEMANDE ECHOUE",
+                    "msg" => "La somme saisie est différente de la somme confirmée"
+                ]);
+            }
+        }else{
+            return response()->json([
+                "status" => false,
+                "redirect_to" => '',
+                "title" => "DEPOT ECHOUE",
+                "msg" => "La somme saisie ne doit pas etre inférieur a zéro"
+            ]);
+        }
+        
     }
 
     public function ajouter(Request $request)
@@ -167,6 +248,40 @@ class SousCaisseController extends Controller
             return view('sous_caisse.historique',[
                 'somme' => $somme_init,
                 'Operation' => $Operation,
+            ]);
+        }
+    }
+
+    public function update_depense(Request $request)
+    {
+        $error_messages = [
+            "desc.required" => "Saisir le nom!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'desc' => 'required',
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+            "status" => false,
+            "reload" => false,
+            "title" => "MIS A JOUR ERRONE",
+            "msg" => $validator->errors()->first()]);
+        
+        $id = $request-> id;
+        
+        $search = Depense::find($id);
+        if($search){
+            $search -> update([
+                'desc' => $request-> desc,
+            ]);
+            return response()->json([
+                "status" => true,
+                "reload" => true,
+                "redirect_to" => route('sous_caisse.demande_depense'),
+                "title" => "MIS A JOUR REUSSIE",
+                "msg" => "Mis a jour reussie"
             ]);
         }
     }
