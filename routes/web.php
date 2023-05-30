@@ -51,4 +51,6 @@ Route::group(['prefix' => 'sous_caisse'], function () {
 
     Route::post('demande_depense', [SousCaisseController::class, 'demande_depense_post']);
     Route::post('update_depense', [SousCaisseController::class, 'update_depense']);
+    Route::post('valider_depense', [SousCaisseController::class, 'valider_depense']);
+    Route::post('rejeter_depense', [SousCaisseController::class, 'rejeter_depense']);
 });

@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>DEMANDE DEPENSE</h1>
+                <h1>DEMANDE DEPENSE</h1> {{$s1->somme}}
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -35,7 +35,7 @@
                             <form id="update">
                                 @csrf
                                 <div class="modal-body">
-                                    <input type="text" name="id" class="form-control" id="Id">
+                                    <input type="hidden" name="id" class="form-control" id="Id">
 
                                     <div class="form-group">
                                         <label for="exampleInputText3">Description</label>
@@ -53,7 +53,7 @@
 
                 </div>
 
-                <div class="card card-danger">
+                <div class="card card-warning">
                     <div class="card-header">
                         <h3 class="card-title"><small></small></h3>
                     </div>
@@ -104,13 +104,13 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-danger">DEMANDER</button>
+                            <button type="submit" class="btn btn-warning">DEMANDER</button>
                         </div>
                     </form>
                 </div>
 
                 <div class="card mt-5">
-                    <div class="card-header bg-danger">
+                    <div class="card-header bg-warning">
                         <h2 class="card-title">LISTE DE DEMANDES DE DEPENSES</h2>
                     </div>
 
@@ -126,7 +126,8 @@
                                     <th>Status</th>
                                     <th>Date</th>
                                     <th>Modifier</th>
-                                    <th>Supprimer</th>
+                                    <th>Valider</th>
+                                    <th>Refuser</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -139,7 +140,7 @@
                                         <td>{{strtoupper($d->sousCaisse->nom)}}</td>
                                         <td>{{strtoupper($d->somme)}}</td>
                                         <td>{{strtoupper($d->type)}}</td>
-                                        <td>{{strtoupper($d->desc)}}</td>
+                                        <td>{{$d->desc}}</td>
                                         <td>
                                             @if($d->status == 0)
                                                 <span class="badge bg-danger">Rejetée</span>
@@ -154,11 +155,7 @@
                                             <form class="update">
                                                 @csrf
                                                 <input type="hidden" value="{{$d -> id}}" name="id">
-                                                @if($d -> desc)
-                                                    <input type="hidden" value="{{$d -> desc}}" name="desc">
-                                                @else
-                                                    <input type="hidden" value="desx" name="desc">
-                                                @endif
+                                                <input type="hidden" value="{{$d -> desc}}" name="desc">
                                                 <button type="submit" class="btn btn-warning" data-toggle="modal"
                                                     data-target="#modal-default">
                                                     <i class='bx bx-edit'></i>
@@ -166,15 +163,27 @@
                                                 </button>
                                             </form>
                                         </td>
-                                        <td>
-                                            <form class="delete">
-                                                @csrf
-                                                <input type="hidden" id="id" value="{{$d -> id}}" name="id">
-                                                <button type="submit" class="btn btn-danger"><i class='bx bx-trash'></i>
-                                                    Supprimer
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if($d->status == 2)
+                                            <td  style="text-align: center;">
+                                                <form class="valider">
+                                                    @csrf
+                                                    <input type="hidden" id="id" value="{{$d -> id}}" name="id">
+                                                    <input type="hidden" id="somme" value="{{$d -> somme}}" name="somme">
+                                                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td  style="text-align: center;">
+                                                <form class="rejeter">
+                                                    @csrf
+                                                    <input type="hidden" id="id" value="{{$d -> id}}" name="id">
+                                                    <button type="submit" class="btn btn-danger"><i class="far fa-times-circle"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @else
+                                            
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -236,10 +245,10 @@
                 }
             });
             $('#loader').fadeOut(3000);
+            return false;
         });
-        return false;
 
-        //Selectionner la sous caisse a modifier
+        //Selectionner la epense a modifier
         document.querySelectorAll('.update').forEach(_formNode => {
             //console.log(this);
             _formNode.addEventListener('submit', _event => {
@@ -248,17 +257,17 @@
                 var data1 = new FormData(_formNode);
 
                 var FormId = data1.get('id');
-                // var FormDesc = data1.get('desc');
+                var FormDesc = data1.get('desc');
 
                 document.getElementById("Id").value = FormId;
-                // document.getElementById("Desc").value = FormDesc;
+                document.getElementById("Desc").value = FormDesc;
 
                 //envoyez le formulaire au serveur par AJAX
                 $('#update').submit(function() {
                     event.preventDefault();
                     $.ajax({
                         type: 'POST',
-                        url: 'sous_caisse/update_depense',
+                        url: 'update_depense',
                         //enctype: 'multipart/form-data',
                         data: $('#update').serialize(),
                         datatype: 'json',
@@ -298,6 +307,130 @@
                     });
                     return false;
                 });
+            });
+        });
+
+        //Selectionner la demande a valider
+        document.querySelectorAll('.valider').forEach(_formNode => {
+            _formNode.addEventListener('submit', _event => {
+                event.preventDefault();
+
+                Swal.fire({
+                    icon: "question",
+                    title: "Etes vous sur de vouloir valider cette demande?",
+                    text: "L'action est irreversible!",
+                    showCancelButton: true,
+                    cancelButtonText: 'NON',
+                    confirmButtonText: 'OUI',
+                    confirmButtonColor: 'green',
+                    cancelButtonColor: 'red',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'valider_depense',
+                            data: $(_formNode).serialize(),
+                            datatype: 'json',
+                            success: function(data) {
+                                console.log(data)
+                                if (data.status) {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: data.title,
+                                        text: data.msg,
+                                    }).then(() => {
+                                        if (data.redirect_to != null) {
+                                            window.location.assign(data
+                                                .redirect_to)
+                                        } else {
+                                            window.location.reload()
+                                        }
+                                    })
+                                } else {
+                                    Swal.fire({
+                                        title: data.title,
+                                        text: data.msg,
+                                        icon: 'error',
+                                        confirmButtonText: "D'accord",
+                                        confirmButtonColor: '#A40000',
+                                    })
+                                }
+                            },
+                            error: function(data) {
+                                console.log(data)
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "erreur",
+                                    text: "Impossible de communiquer avec le serveur.",
+                                    timer: 3600,
+                                })
+                            }
+                        });
+                    }
+                })
+                return false;
+            });
+        });
+
+        //Selectionner la demande a valider
+        document.querySelectorAll('.rejeter').forEach(_formNode => {
+            _formNode.addEventListener('submit', _event => {
+                event.preventDefault();
+
+                Swal.fire({
+                    icon: "question",
+                    title: "Etes vous sur de vouloir rejeter cette demande?",
+                    text: "L'action est irreversible!",
+                    showCancelButton: true,
+                    cancelButtonText: 'NON',
+                    confirmButtonText: 'OUI',
+                    confirmButtonColor: 'red',
+                    cancelButtonColor: 'black',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'rejeter_depense',
+                            data: $(_formNode).serialize(),
+                            datatype: 'json',
+                            success: function(data) {
+                                console.log(data)
+                                if (data.status) {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: data.title,
+                                        text: data.msg,
+                                    }).then(() => {
+                                        if (data.redirect_to != null) {
+                                            window.location.assign(data
+                                                .redirect_to)
+                                        } else {
+                                            window.location.reload()
+                                        }
+                                    })
+                                } else {
+                                    Swal.fire({
+                                        title: data.title,
+                                        text: data.msg,
+                                        icon: 'error',
+                                        confirmButtonText: "D'accord",
+                                        confirmButtonColor: '#A40000',
+                                    })
+                                }
+                            },
+                            error: function(data) {
+                                console.log(data)
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "erreur",
+                                    text: "Impossible de communiquer avec le serveur.",
+                                    timer: 3600,
+                                })
+                            }
+                        });
+                    }
+                })
+                return false;
             });
         });
 

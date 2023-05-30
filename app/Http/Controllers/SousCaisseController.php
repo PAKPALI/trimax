@@ -25,10 +25,12 @@ class SousCaisseController extends Controller
     public function demande_depense()
     {
         $SousCaisse = SousCaisse::all();
+        $S1 = SousCaisse::find(1);
         $Depense = Depense::all();
         
 
         return view('sous_caisse.demande_depense',[
+            's1' => $S1,
             'SC' => $SousCaisse,
             'Depense' => $Depense,
         ]);
@@ -255,7 +257,7 @@ class SousCaisseController extends Controller
     public function update_depense(Request $request)
     {
         $error_messages = [
-            "desc.required" => "Saisir le nom!",
+            "desc.required" => "Saisir la description!",
         ];
 
         $validator = Validator::make($request->all(),[
@@ -284,5 +286,99 @@ class SousCaisseController extends Controller
                 "msg" => "Mis a jour reussie"
             ]);
         }
+    }
+
+    public function valider_depense(Request $request)
+    {
+        $error_messages = [
+            "id.required" => "Remplir le champ id!",
+            "id.numeric" => "Remplir le champ id avec les chiffres!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'id' => 'required| numeric'
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+            "status" => false,
+            "reload" => false,
+            "title" => "SUPPRESSION",
+            "msg" => $validator->errors()->first()]);
+        
+        $id = $request-> id;
+        $Depense = Depense::find($id);
+        $sousCaisse = SousCaisse::find($Depense->sous_caisse_id);
+        if($Depense){
+            $nouvelleSomme = $sousCaisse->somme - $Depense->somme;
+
+            if( $nouvelleSomme > 0){
+
+                $sousCaisse -> update([
+                    'somme' => $nouvelleSomme,
+                ]);
+    
+                $Depense -> update([
+                    'status' => '1',
+                ]);
+    
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('sous_caisse.demande_depense'),
+                    "title" => "VALIDATION REUSSIE",
+                    "msg" => "validation reussie"
+                ]);
+
+            }else{
+                return response()->json([
+                    "status" => false,
+                    "reload" => true,
+                    "title" => "VALIDATION ECHOUEE",
+                    "msg" => "Le compte de la sous caisse liee a cette depense n'a pas assez de fond pour supporter cette depense"
+                ]);
+            }
+        }else{
+            return response()->json([
+                "status" => false,
+                "reload" => true,
+                "title" => "SUPPRESSION",
+                "msg" => "Depense inexistante"
+            ]);
+        }
+    }
+
+    public function rejeter_depense(Request $request)
+    {
+        $error_messages = [
+            "id.required" => "Remplir le champ id!",
+            "id.numeric" => "Remplir le champ id avec les chiffres!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'id' => 'required| numeric'
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+            "status" => false,
+            "reload" => false,
+            "title" => "SUPPRESSION",
+            "msg" => $validator->errors()->first()]);
+        
+        $id = $request-> id;
+        $Depense = Depense::find($id);
+
+        $Depense -> update([
+            'status' => '0',
+        ]);
+
+        return response()->json([
+            "status" => true,
+            "reload" => true,
+            "redirect_to" => route('sous_caisse.demande_depense'),
+            "title" => "VALIDATION REJETEE",
+            "msg" => "validation rejetee avec succes"
+        ]);
     }
 }
