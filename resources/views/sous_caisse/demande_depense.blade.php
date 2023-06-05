@@ -71,6 +71,15 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label>Selectionnez type de depense</label>
+                                <select class="form-control select2" name="type" style="width: 100%;">
+                                    <option value="" selected="selected"></option>
+                                    @foreach($TypeDepense as $t)
+                                        <option value="{{$t -> id}}">{{strtoupper($t -> nom)}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="exampleInputText1">Somme</label>
                                 <input type="number" name="somme" class="form-control" id="exampleInputText1"
                                     placeholder="Enter la somme">
@@ -79,11 +88,6 @@
                                 <label for="exampleInputText2">Confirmer Somme</label>
                                 <input type="number" name="confirmersomme" class="form-control" id="exampleInputText2"
                                     placeholder="Confirmer la somme">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputText">Type de dépense</label>
-                                <input type="texte" name="type" class="form-control" id="exampleInputText"
-                                    placeholder="Type de dépense">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputText3">Description</label>
@@ -151,18 +155,32 @@
                                             @endif
                                         </td>
                                         <td>{{$d->created_at}}</td>
-                                        <td>
-                                            <form class="update">
-                                                @csrf
-                                                <input type="hidden" value="{{$d -> id}}" name="id">
-                                                <input type="hidden" value="{{$d -> desc}}" name="desc">
-                                                <button type="submit" class="btn btn-warning" data-toggle="modal"
-                                                    data-target="#modal-default">
-                                                    <i class='bx bx-edit'></i>
-                                                    Modifier
-                                                </button>
-                                            </form>
-                                        </td>
+                                        <!-- update -->
+                                        @if($d->status == 2)
+                                            <td>
+                                                <form class="update">
+                                                    @csrf
+                                                    <input type="hidden" value="{{$d -> id}}" name="id">
+                                                    <input type="hidden" value="{{$d -> desc}}" name="desc">
+                                                    <button type="submit" class="btn btn-warning" data-toggle="modal"
+                                                        data-target="#modal-default">
+                                                        <i class='bx bx-edit'></i>
+                                                        Modifier
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <form class="update">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-warning" disabled>
+                                                        <i class='fas fa-edit'></i>
+                                                        Modifier
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                        <!-- action -->
                                         @if($d->status == 2)
                                             <td  style="text-align: center;">
                                                 <form class="valider">
@@ -182,7 +200,14 @@
                                                 </form>
                                             </td>
                                         @else
-                                            
+                                            <td  style="text-align: center;">
+                                                <button type="submit" class="btn btn-success" disabled><i class="fas fa-check"></i>
+                                                </button>
+                                            </td>
+                                            <td  style="text-align: center;">
+                                                <button type="submit" class="btn btn-danger" disabled><i class="far fa-times-circle"></i>
+                                                </button>
+                                            </td>
                                         @endif
                                     </tr>
                                 @endforeach

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pays;
 use App\Models\Depense;
 use App\Models\SousCaisse;
+use App\Models\TypeDepense;
 use Illuminate\Http\Request;
 use App\Models\OperationSousCaisse;
 use Illuminate\Support\Facades\Validator;
@@ -25,14 +26,16 @@ class SousCaisseController extends Controller
     public function demande_depense()
     {
         $SousCaisse = SousCaisse::all();
-        $S1 = SousCaisse::find(4);
+        $S1 = SousCaisse::find(1);
         $Depense = Depense::all();
+        $TypeDepense = TypeDepense::all();
         
 
         return view('sous_caisse.demande_depense',[
             's1' => $S1,
             'SC' => $SousCaisse,
             'Depense' => $Depense,
+            'TypeDepense' => $TypeDepense,
         ]);
     }
 
@@ -45,7 +48,7 @@ class SousCaisseController extends Controller
             "confirmersomme.required" => "Confirmer la somme!",
             "confirmersomme.numeric" => "La somme doit etre numerique!",
             "type.required" => "Saisissez la description!",
-            // "desc.required" => "Saisissez la description!",
+            "desc.required" => "Saisissez la description!",
         ];
 
         $validator = Validator::make($request->all(),[
@@ -53,6 +56,7 @@ class SousCaisseController extends Controller
             'somme' => ['required','numeric'],
             'confirmersomme' => ['required','numeric'],
             'type' => ['required'],
+            'desc' => ['required'],
         ], $error_messages);
 
         if($validator->fails())
@@ -63,7 +67,7 @@ class SousCaisseController extends Controller
             "msg" => $validator->errors()->first()]);
 
         // requete sur la sous caisse
-        $sousCaisse = SousCaisse::find($request-> selection);
+        $td = TypeDepense::find($request-> type);
 
         // on verifie voir si les sommes sont positives
         if($request-> somme >=0){
@@ -72,8 +76,9 @@ class SousCaisseController extends Controller
                 // enregistrer la depense
                 Depense::create([
                     'sous_caisse_id' => $request-> selection,
+                    'type_depense_id' => $request-> type,
                     'somme' => $request-> somme,
-                    'type' => $request-> type,
+                    'type' => $td->nom,
                     'desc' => $request-> desc,
                 ]);
                 // envoyez une reponse

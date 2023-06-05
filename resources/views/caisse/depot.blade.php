@@ -52,18 +52,22 @@
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="exampleInputText0">Banque</label>
-                                <input type="text" name="banque" class="form-control" id="exampleInputText0"
-                                    placeholder="Enter le nom de la banque">
+                                <label>Selectionnez la banque</label>
+                                <select class="form-control select2" name="banque" style="width: 100%;">
+                                    <option value="" selected="selected"></option>
+                                    @foreach($Banque as $b)
+                                        <option value="{{$b -> nom}}">{{strtoupper($b -> nom)}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputText1">Somme</label>
-                                <input type="number" name="somme" class="form-control" id="exampleInputText1"
+                                <input type="text" name="somme" class="form-control" id="somme"
                                     placeholder="Enter la somme">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputText2">Confirmer Somme</label>
-                                <input type="number" name="confirmersomme" class="form-control" id="exampleInputText2"
+                                <input type="text" name="confirmersomme" class="form-control" id="c.somme"
                                     placeholder="Confirmer la somme">
                             </div>
                             <div class="form-group">
@@ -137,6 +141,7 @@
 <script>
 $('#loader').hide();
 $(function() {
+    var somme = $('#somme');
     $('#loader').hide();
     //Ajax pour ajouter depot
     $('#depot').submit(function() {
@@ -183,8 +188,54 @@ $(function() {
             }
         });
         $('#loader').fadeOut(3000);
+        return false;
     });
-    return false;
+
+    function formatNumberWithSpaces(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    var input = document.getElementById("somme");
+    input.addEventListener("input", function() {
+        var value = input.value;
+        
+        // Supprimer les espaces existants (facultatif)
+        value = value.replace(/\s/g, "");
+
+        // Convertir la valeur en nombre entier
+        var intValue = parseInt(value, 10);
+
+        // Vérifier si la valeur est un nombre valide
+        if (!isNaN(intValue)) {
+            // Formater la valeur avec des espaces
+            var formattedValue = formatNumberWithSpaces(intValue);
+            // alert(formattedValue)
+
+            // Afficher la valeur formatée dans le champ de saisie
+            input.value = formattedValue;
+        }
+    });
+
+    var input1 = document.getElementById("c.somme");
+    input1.addEventListener("input", function() {
+        var value = input1.value;
+        
+        // Supprimer les espaces existants (facultatif)
+        value = value.replace(/\s/g, "");
+
+        // Convertir la valeur en nombre entier
+        var intValue = parseInt(value, 10);
+
+        // Vérifier si la valeur est un nombre valide
+        if (!isNaN(intValue)) {
+            // Formater la valeur avec des espaces
+            var formattedValue = formatNumberWithSpaces(intValue);
+            // alert(formattedValue)
+
+            // Afficher la valeur formatée dans le champ de saisie
+            input1.value = formattedValue;
+        }
+    });
 });
 </script>
 

@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaysController;
+use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\SousCaisseController;
+use App\Http\Controllers\TypeDepenseController;
 
 Route::get('accueil', function () {
     return view('accueil');
@@ -22,6 +24,28 @@ Route::group(['prefix' => 'pays'], function () {
     Route::post('ajouterPays', [PaysController::class, 'ajouterPays']);
     Route::post('updatePays', [PaysController::class, 'update']);
     Route::post('deletePays', [PaysController::class, 'delete']);
+});
+
+// banque
+Route::group(['prefix' => 'banque'], function () {
+    // Get
+    Route::get('', [BanqueController::class, 'banque'])->name('banque');
+
+    //post
+    Route::post('ajouter', [BanqueController::class, "ajouter"]);
+    Route::post('update', [BanqueController::class, 'update']);
+    Route::post('delete', [BanqueController::class, 'delete']);
+});
+
+// type depense
+Route::group(['prefix' => 'type_depense'], function () {
+    // Get
+    Route::get('', [TypeDepenseController::class, 'typeDepense'])->name('typeDepense');
+
+    //post
+    Route::post('ajouter', [TypeDepenseController::class, "ajouter"]);
+    Route::post('update', [TypeDepenseController::class, 'update']);
+    Route::post('delete', [TypeDepenseController::class, 'delete']);
 });
 
 

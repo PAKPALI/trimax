@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Depense extends Model
 {
     use HasFactory;
-    protected $fillable = ['sous_caisse_id','somme','type','desc','status'];
+    protected $fillable = ['sous_caisse_id','type_depense_id','somme','type','desc','status'];
 
     public function sousCaisse(){
         return  $this ->belongsTo(SousCaisse::class);

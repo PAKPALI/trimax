@@ -37,7 +37,7 @@
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-box"></i>
               <p>
-                PAYS
+                Pays
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -46,6 +46,46 @@
                 <a href="{{route('pays')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Ajouter pays</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- gerer les banques-->
+          <li class="nav-header"> GESTION BANQUE</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-box"></i>
+              <p>
+                Banque
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('banque')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ajouter banque</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- gerer les banques-->
+          <li class="nav-header"> GESTION TYPE DE DEPENSE</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-box"></i>
+              <p>
+                Type de depense
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('typeDepense')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ajouter type depense</p>
                 </a>
               </li>
             </ul>

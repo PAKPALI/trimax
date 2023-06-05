@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banque;
 use App\Models\Caisse;
 use App\Models\SousCaisse;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ class CaisseController extends Controller
 {
     public function depot()
     {
+        $Banque = Banque::all();
         $caisse = Caisse::first();
         $somme_init = 0;
 
@@ -22,11 +24,13 @@ class CaisseController extends Controller
             return view('caisse.depot',[
                 'somme' => $caisse->somme,
                 'Operation' => $operation,
+                'Banque' => $Banque,
             ]);
         }else{
             return view('caisse.depot',[
                 'somme' => $somme_init,
                 'Operation' => $operation,
+                'Banque' => $Banque,
             ]);
         }
     }
@@ -61,7 +65,7 @@ class CaisseController extends Controller
         $error_messages = [
             "banque.required" => "Mettez le nom de la banque",
             "somme.required" => "Saisissez la somme!",
-            "somme.numeric" => "La somme doit etre numerique!",
+            // "somme.numeric" => "La somme doit etre numerique!",
             "confirmersomme.required" => "Confirmer la somme!",
             "confirmersomme.numeric" => "La somme doit etre numerique!",
             "desc.required" => "Saisissez la description!",
@@ -69,8 +73,8 @@ class CaisseController extends Controller
 
         $validator = Validator::make($request->all(),[
             'banque' => ['required'],
-            'somme' => ['required','numeric'],
-            'confirmersomme' => ['required','numeric'],
+            'somme' => ['required'],
+            'confirmersomme' => ['required'],
             'desc' => ['required'],
         ], $error_messages);
 
@@ -85,19 +89,19 @@ class CaisseController extends Controller
         $caisse = Caisse::first();
         // on verifie voir si les sommes sont identiques
 
-        if($request-> somme >=0){
-            if($request-> somme == $request-> confirmersomme){
+        if(str_replace(" ", "", $request-> somme)>=0){
+            if(str_replace(" ", "", $request-> somme) == str_replace(" ", "", $request-> confirmersomme)){
                 // si la caisse existe
                 if($caisse){
                     // operation pour avoir la nouvelle quantitée
-                    $nouvelleQuantite = $caisse -> somme + $request-> somme;
+                    $nouvelleQuantite = $caisse -> somme + str_replace(" ", "", $request-> somme);
                     // mise a jour sur la caisse
                     $caisse -> update([
                         'somme' => $nouvelleQuantite,
                     ]);
                     // enrgistrer loperation
                     OperationCaisse::create([
-                        'somme' => $request-> somme,
+                        'somme' => str_replace(" ", "", $request-> somme),
                         'type_op' => "DEPOT",
                         'banque' => $request-> banque,
                         'desc' => $request-> desc,
@@ -113,11 +117,11 @@ class CaisseController extends Controller
                 }else{ //si la caisse nexiste pas
                     //creer la caisse et ajouter la somme saisie
                     Caisse::create([
-                        'somme' => $request-> somme,
+                        'somme' => str_replace(" ", "", $request-> somme),
                     ]);
                     // enrgistrer loperation
                     OperationCaisse::create([
-                        'somme' => $request-> somme,
+                        'somme' => str_replace(" ", "", $request-> somme),
                         'type_op' => "DEPOT",
                         'banque' => $request-> banque,
                         'desc' => $request-> desc,
@@ -153,15 +157,15 @@ class CaisseController extends Controller
     {
         $error_messages = [
             "somme.required" => "Saisissez la somme!",
-            "somme.numeric" => "La somme doit etre numerique!",
+            // "somme.numeric" => "La somme doit etre numerique!",
             "confirmersomme.required" => "Confirmer la somme!",
-            "confirmersomme.numeric" => "La somme doit etre numerique!",
+            // "confirmersomme.numeric" => "La somme doit etre numerique!",
             "desc.required" => "Saisissez la description!",
         ];
 
         $validator = Validator::make($request->all(),[
-            'somme' => ['required','numeric'],
-            'confirmersomme' => ['required','numeric'],
+            'somme' => ['required'],
+            'confirmersomme' => ['required'],
             'desc' => ['required'],
         ], $error_messages);
 
@@ -177,15 +181,16 @@ class CaisseController extends Controller
 
         // requete sur la sous caisse
         $sousCaisse = SousCaisse::find($request-> selection);
+        $somme = str_replace(" ", "", $request-> somme);
 
         if($request-> selection){
             // on verifie voir si les sommes sont identiques
-            if($request-> somme >=0){
-                if($request-> somme == $request-> confirmersomme){
+            if($somme >=0){
+                if($somme == str_replace(" ", "", $request-> confirmersomme)){
                     // si la caisse existe
                     if($caisse){
                         // operation pour avoir la nouvelle quantitée de la caisse
-                        $nouvelleQuantiteCaisse = $caisse -> somme - $request-> somme;
+                        $nouvelleQuantiteCaisse = $caisse -> somme - $somme;
                         // verifier si la qte saisie est inferieure  a la somme dans la caisse
                         if($nouvelleQuantiteCaisse>=0){
                             // mise a jour sur la caisse
@@ -193,13 +198,13 @@ class CaisseController extends Controller
                                 'somme' => $nouvelleQuantiteCaisse,
                             ]);
                             // operation pour avoir la nouvelle quantitée de la sous caisse
-                            $nouvelleQuantiteSousCaisse = $sousCaisse -> somme + $request-> somme;
+                            $nouvelleQuantiteSousCaisse = $sousCaisse -> somme + $somme;
                             $sousCaisse -> update([
                                 'somme' => $nouvelleQuantiteSousCaisse,
                             ]);
                             // enregistrer loperation a la caisse
                             OperationCaisse::create([
-                                'somme' => $request-> somme,
+                                'somme' => $somme,
                                 'type_op' => "RETRAIT",
                                 'sous_caisse' => $sousCaisse-> nom,
                                 'desc' => $request-> desc,
@@ -207,7 +212,7 @@ class CaisseController extends Controller
                             // enregistrer loperation a la sous caisse
                             $sousCaisse->operation()->create([
                                 'nom_sous_caisse' => $sousCaisse->nom,
-                                'somme' => $request-> somme,
+                                'somme' => $somme,
                             ]);
                             // envoyez une reponse
                             return response()->json([
