@@ -25,7 +25,7 @@ class SousCaisseController extends Controller
     public function demande_depense()
     {
         $SousCaisse = SousCaisse::all();
-        $S1 = SousCaisse::find(1);
+        $S1 = SousCaisse::find(4);
         $Depense = Depense::all();
         
 
