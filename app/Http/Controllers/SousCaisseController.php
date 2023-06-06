@@ -68,16 +68,17 @@ class SousCaisseController extends Controller
 
         // requete sur la sous caisse
         $td = TypeDepense::find($request-> type);
+        $somme = str_replace(" ", "", $request-> somme);
 
         // on verifie voir si les sommes sont positives
-        if($request-> somme >=0){
+        if($somme>=0){
             // on verifie voir si les sommes sont identiques
-            if($request-> somme == $request-> confirmersomme){
+            if($somme == str_replace(" ", "", $request-> confirmersomme)){
                 // enregistrer la depense
                 Depense::create([
                     'sous_caisse_id' => $request-> selection,
                     'type_depense_id' => $request-> type,
-                    'somme' => $request-> somme,
+                    'somme' => $somme,
                     'type' => $td->nom,
                     'desc' => $request-> desc,
                 ]);
