@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaysController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\SousCaisseController;
@@ -77,4 +78,16 @@ Route::group(['prefix' => 'sous_caisse'], function () {
     Route::post('update_depense', [SousCaisseController::class, 'update_depense']);
     Route::post('valider_depense', [SousCaisseController::class, 'valider_depense']);
     Route::post('rejeter_depense', [SousCaisseController::class, 'rejeter_depense']);
+});
+
+// user
+Route::group(['prefix' => 'utilisateurs'], function () {
+    // Get
+    Route::get('', [UserController::class, 'user'])->name('user');
+
+    //post
+    Route::post('ajouter', [UserController::class, "ajouter"]);
+    Route::post('update', [UserController::class, 'update']);
+    Route::post('parametre', [UserController::class, 'parametre']);
+    Route::post('delete', [UserController::class, 'delete']);
 });

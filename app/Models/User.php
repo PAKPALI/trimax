@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\SousCaisse;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,10 +19,18 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'sous_caisses_id',
+        'nom',
         'email',
         'password',
+        'connected',
+        'status_client',
+        'type_user',
     ];
+
+    public function sousCaisse(){
+        return  $this ->belongsTo(SousCaisse::class, 'sous_caisses_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

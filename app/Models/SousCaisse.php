@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Pays;
+use App\Models\User;
 use App\Models\Depense;
 use App\Models\OperationSousCaisse;
 use Illuminate\Database\Eloquent\Model;
@@ -24,5 +25,8 @@ class SousCaisse extends Model
 
     public function depense(){
         return $this->hasMany(Depense::class);
+    }
+    public function user(){
+        return $this->hasMany(User::class);
     }
 }
