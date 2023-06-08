@@ -147,6 +147,7 @@
                                 @php
                                     $n = 1
                                 @endphp
+
                                 @foreach($User as $u)
                                 <tr>
                                     <td>{{$n++}}</td>
@@ -158,8 +159,30 @@
                                         @endif
                                     </td>
                                     <td>{{strtoupper($u->nom)}}</td>
-                                    <td>{{strtoupper($u->connected)}}</td>
-                                    <td>{{strtoupper($u->status_client)}}</td>
+                                    <td>
+                                        <form id="connected" class="connected">
+                                            @csrf
+                                            <input type="hidden" value="{{$u -> id}}" name="id">
+                                            <input type="hidden" value="{{$u -> connected}}" name="connected">
+                                            @if($u -> connected ==0)
+                                                <input type="checkbox" id="check" data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                            @else
+                                                <input type="checkbox" id="check" name="" checked data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                            @endif
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form id="status_client" class="status_client">
+                                            @csrf
+                                            <input type="hidden" value="{{$u -> id}}" name="id">
+                                            <input type="hidden" value="{{$u -> status_client}}" name="status_client">
+                                            @if($u -> status_client ==0)
+                                                <input type="checkbox" id="check" data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                            @else
+                                                <input type="checkbox" id="check" checked data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                            @endif
+                                        </form>
+                                    </td>
                                     <td>{{$u->created_at}}</td>
                                     <td>
                                         <form class="parametrer">
@@ -465,6 +488,234 @@ $(function() {
             return false;
         });
     });
+
+    $("input[data-bootstrap-switch]").each(function(){
+        $(this).bootstrapSwitch();
+    })
+
+    // Selectionner le user a modifier
+    document.querySelectorAll('.connected').forEach(_formNode => {
+        var data1 = new FormData(_formNode);
+        var checkbox = $(_formNode).find("input[type='checkbox']");
+
+        var Id = data1.get('id');
+
+        checkbox.on("switchChange.bootstrapSwitch", function(event, state) {
+            //envoyez le formulaire au serveur par AJAX
+            var switchState = $(_formNode).find("input[type='checkbox']").bootstrapSwitch('state');
+            if(switchState){
+                var dataToSend = {
+                    connected: 1,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'utilisateurs/connected',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }else{
+                var dataToSend = {
+                    connected: 0,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'utilisateurs/connected',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }
+            return false;
+        });
+        return false;
+    });
+
+    document.querySelectorAll('.status_client').forEach(_formNode => {
+        var data1 = new FormData(_formNode);
+        var checkbox = $(_formNode).find("input[type='checkbox']");
+
+        var Id = data1.get('id');
+
+        checkbox.on("switchChange.bootstrapSwitch", function(event, state) {
+            //envoyez le formulaire au serveur par AJAX
+            var switchState = $(_formNode).find("input[type='checkbox']").bootstrapSwitch('state');
+            if(switchState){
+                var dataToSend = {
+                    connected: 1,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'utilisateurs/status',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }else{
+                var dataToSend = {
+                    connected: 0,
+                    id: Id
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Récupère automatiquement le token CSRF depuis la balise meta
+                    },
+                    type: 'POST',
+                    url: 'utilisateurs/status',
+                    //enctype: 'multipart/form-data',
+                    data: dataToSend,
+                    datatype: 'json',
+                    success: function(data) {
+                        //var object = JSON.parse(data);
+                        console.log(data)
+                        if (data.status) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                icon: "success",
+                                title: data.title,
+                                text: data.msg,
+                                timer: 3000
+                            })
+                        } else {
+                            Swal.fire({
+                                title: data.title,
+                                text: data.msg,
+                                icon: 'error',
+                                confirmButtonText: "D'accord",
+                                confirmButtonColor: '#A40000',
+                            })
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data)
+                        Swal.fire({
+                            icon: "error",
+                            title: "erreur",
+                            text: "Impossible de communiquer avec le serveur.",
+                            timer: 3600,
+                        })
+                    }
+                });
+                return false;
+            }
+            return false;
+        });
+        return false;
+    });
+
 });
 </script>
 

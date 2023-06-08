@@ -89,5 +89,7 @@ Route::group(['prefix' => 'utilisateurs'], function () {
     Route::post('ajouter', [UserController::class, "ajouter"]);
     Route::post('update', [UserController::class, 'update']);
     Route::post('parametre', [UserController::class, 'parametre']);
+    Route::post('connected', [UserController::class, 'connected']);
+    Route::post('status', [UserController::class, 'status']);
     Route::post('delete', [UserController::class, 'delete']);
 });

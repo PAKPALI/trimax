@@ -153,6 +153,74 @@ class UserController extends Controller
         }
     }
 
+    public function connected(Request $request)
+    {
+        
+        $id = $request-> id;
+        $connected = $request-> connected;
+        
+        $search = User::find($id);
+        if($search){
+            if($connected == 0){
+                $search -> update([
+                    'connected' => false,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "DESACTIVATION REUSSIE",
+                    "msg" => "Desactivation reussie"
+                ]);
+            }else{
+                $search -> update([
+                    'connected' => true,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "ACTIVATION REUSSIE",
+                    "msg" => "activation reussie"
+                ]);
+            }
+        }
+    }
+
+    public function status(Request $request)
+    {
+        
+        $id = $request-> id;
+        $connected = $request-> connected;
+        
+        $search = User::find($id);
+        if($search){
+            if($connected == 0){
+                $search -> update([
+                    'status_client' => false,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "DESACTIVATION REUSSIE",
+                    "msg" => "Desactivation reussie"
+                ]);
+            }else{
+                $search -> update([
+                    'status_client' => true,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "ACTIVATION REUSSIE",
+                    "msg" => "activation reussie"
+                ]);
+            }
+        }
+    }
+
     public function delete(Request $request)
     {
 
