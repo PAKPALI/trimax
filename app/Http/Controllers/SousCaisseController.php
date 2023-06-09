@@ -8,6 +8,7 @@ use App\Models\SousCaisse;
 use App\Models\TypeDepense;
 use Illuminate\Http\Request;
 use App\Models\OperationSousCaisse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SousCaisseController extends Controller
@@ -25,18 +26,41 @@ class SousCaisseController extends Controller
 
     public function demande_depense()
     {
-        $SousCaisse = SousCaisse::all();
-        $S1 = SousCaisse::find(1);
-        $Depense = Depense::all();
-        $TypeDepense = TypeDepense::all();
-        
+        $user_id = Auth::user()->id;
 
-        return view('sous_caisse.demande_depense',[
-            's1' => $S1,
-            'SC' => $SousCaisse,
-            'Depense' => $Depense,
-            'TypeDepense' => $TypeDepense,
-        ]);
+        if(Auth::user()->type_user ==1){
+            $SousCaisse = SousCaisse::all();
+            $S1 = SousCaisse::find(Auth::user()->sous_caisse_id);
+            $Depense = Depense::where('status', 2)->get();
+            $Depense_v = Depense::where('status', 1)->get();
+            $Depense_r = Depense::where('status', 0)->get();
+            $TypeDepense = TypeDepense::all();
+
+            return view('sous_caisse.demande_depense',[
+                's1' => $S1,
+                'SC' => $SousCaisse,
+                'Depense' => $Depense,
+                'Depense_v' => $Depense_v,
+                'Depense_r' => $Depense_r,
+                'TypeDepense' => $TypeDepense,
+            ]);
+        }else{
+            $SousCaisse = SousCaisse::all();
+            $S1 = SousCaisse::find(Auth::user()->sous_caisse_id);
+            $Depense = Depense::where('status', 2)->where('user_id', $user_id)->get();
+            $Depense_v = Depense::where('status', 1)->where('user_id', $user_id)->get();
+            $Depense_r = Depense::where('status', 0)->where('user_id', $user_id)->get();
+            $TypeDepense = TypeDepense::all();
+            
+            return view('sous_caisse.demande_depense',[
+                's1' => $S1,
+                'SC' => $SousCaisse,
+                'Depense' => $Depense,
+                'Depense_v' => $Depense_v,
+                'Depense_r' => $Depense_r,
+                'TypeDepense' => $TypeDepense,
+            ]);
+        }
     }
 
     public function demande_depense_post(Request $request)
@@ -53,8 +77,8 @@ class SousCaisseController extends Controller
 
         $validator = Validator::make($request->all(),[
             'selection' => ['required'],
-            'somme' => ['required','numeric'],
-            'confirmersomme' => ['required','numeric'],
+            'somme' => ['required'],
+            'confirmersomme' => ['required'],
             'type' => ['required'],
             'desc' => ['required'],
         ], $error_messages);
@@ -78,6 +102,7 @@ class SousCaisseController extends Controller
                 Depense::create([
                     'sous_caisse_id' => $request-> selection,
                     'type_depense_id' => $request-> type,
+                    'user_id' => $request-> user_id,
                     'somme' => $somme,
                     'type' => $td->nom,
                     'desc' => $request-> desc,

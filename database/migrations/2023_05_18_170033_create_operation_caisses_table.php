@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('operation_caisses', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('somme');
+            $table ->foreignId('banque_id')->nullable()->constrained();
             $table->string('type_op');
-            $table->string('banque')->nullable();
             $table->string('sous_caisse')->nullable();
             $table->longText('desc');
             $table->timestamps();

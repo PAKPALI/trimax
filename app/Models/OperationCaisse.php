@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Banque;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OperationCaisse extends Model
 {
     use HasFactory;
-    protected $fillable = ['somme','type_op','banque','sous_caisse','desc'];
+    protected $fillable = ['somme','type_op','banque_id','sous_caisse','desc'];
+
+    public function banque(){
+        return  $this ->belongsTo(Banque::class, 'banque_id');
+    }
 }

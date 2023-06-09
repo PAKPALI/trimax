@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function user()
     {
-        $User = User::all();
+        $User = User::where('type_user', 2)->get();
         $SousCaisse = SousCaisse::all();
 
         return view('user',[
@@ -61,17 +61,57 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function ajouter_admin(Request $request)
     {
         $error_messages = [
-            "nom.required" => "Remplir le champ nom!",
-            "email.required" => "Remplir le champ nom!",
-            "email.unique" => "Le nom ".$request-> email. " existe deja!",
+            "nom.required" => "Remplir le champ Nom!",
+            "email.required" => "Remplir le champ Email!",
+            "email.unique" => "L'email ".$request-> email. " existe deja!",
+            "password.required" => "Remplir le champ mot de passe!",
+            "password.min" => "Le mot de passe doit comporter au moins 8 caracteres!",
+            "password.confirmed" => "Les deux champs de mots de passe ne correspondent pas",
         ];
 
         $validator = Validator::make($request->all(),[
             'nom' => ['required'],
             'email' => ['required','unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+            "status" => false,
+            "reload" => false,
+            "title" => "AJOUT ECHOUE",
+            "msg" => $validator->errors()->first()]);
+
+        User::create([
+            'nom' => $request-> nom,
+            'email' => $request-> email,
+            'type_user' => 1,
+            'password' => Hash::make($request['password']),
+        ]);
+
+        return response()->json([
+            "status" => true,
+            "reload" => true,
+            "redirect_to" => route('conn'),
+            "title" => "AJOUT REUSSI",
+            "msg" => "L'admin au nom de ".$request-> nom." a bien été ajouté"
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $error_messages = [
+            "nom.required" => "Remplir le champ nom!",
+            "email.required" => "Remplir le champ nom!",
+            // "email.unique" => "L'email '".$request-> email. "' existe deja!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'nom' => ['required'],
+            // 'email' => ['required','unique:users'],
         ], $error_messages);
 
         if($validator->fails())
@@ -140,16 +180,30 @@ class UserController extends Controller
         
         $search = User::find($id);
         if($search){
-            $search -> update([
-                'sous_caisses_id' => $sc,
-            ]);
-            return response()->json([
-                "status" => true,
-                "reload" => true,
-                "redirect_to" => route('user'),
-                "title" => "MIS A JOUR REUSSIE",
-                "msg" => "Mis a jour reussie"
-            ]);
+            if($sc == 0){
+                $search -> update([
+                    'sous_caisse_id' => null,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "MIS A JOUR REUSSIE",
+                    "msg" => "Mis a jour reussie"
+                ]);
+            }else{
+                $search -> update([
+                    'sous_caisse_id' => $sc,
+                ]);
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('user'),
+                    "title" => "MIS A JOUR REUSSIE",
+                    "msg" => "Mis a jour reussie"
+                ]);
+            }
+            
         }
     }
 
@@ -169,8 +223,8 @@ class UserController extends Controller
                     "status" => true,
                     "reload" => true,
                     "redirect_to" => route('user'),
-                    "title" => "DESACTIVATION REUSSIE",
-                    "msg" => "Desactivation reussie"
+                    "title" => "CONNEXION DESACTIVER",
+                    "msg" => "Desactivation reussie pour ".$search->nom
                 ]);
             }else{
                 $search -> update([
@@ -180,8 +234,8 @@ class UserController extends Controller
                     "status" => true,
                     "reload" => true,
                     "redirect_to" => route('user'),
-                    "title" => "ACTIVATION REUSSIE",
-                    "msg" => "activation reussie"
+                    "title" => "CONNEXION ACTIVER",
+                    "msg" => "activation reussie pour ".$search->nom
                 ]);
             }
         }
@@ -203,8 +257,8 @@ class UserController extends Controller
                     "status" => true,
                     "reload" => true,
                     "redirect_to" => route('user'),
-                    "title" => "DESACTIVATION REUSSIE",
-                    "msg" => "Desactivation reussie"
+                    "title" => "GESTION CLIENT DESACTIVER",
+                    "msg" => "Desactivation reussie pour ".$search->nom
                 ]);
             }else{
                 $search -> update([
@@ -214,8 +268,8 @@ class UserController extends Controller
                     "status" => true,
                     "reload" => true,
                     "redirect_to" => route('user'),
-                    "title" => "ACTIVATION REUSSIE",
-                    "msg" => "activation reussie"
+                    "title" => "GESTION CLIENT ACTIVER",
+                    "msg" => "activation reussie pour ".$search->nom
                 ]);
             }
         }
@@ -241,14 +295,14 @@ class UserController extends Controller
             "msg" => $validator->errors()->first()]);
         
         $id = $request-> id;
-        $search = Banque::find($id);
+        $search = User::find($id);
         if($search){
             $search -> delete();
 
             return response()->json([
                 "status" => true,
                 "reload" => true,
-                "redirect_to" => route('banque'),
+                "redirect_to" => route('user'),
                 "title" => "SUPPRESSION",
                 "msg" => "suppression reussie"
             ]);
@@ -258,7 +312,7 @@ class UserController extends Controller
                 "status" => false,
                 "reload" => true,
                 "title" => "SUPPRESSION",
-                "msg" => "Banque inexistante"
+                "msg" => "Utilisateur inexistant"
             ]);
         }
     }

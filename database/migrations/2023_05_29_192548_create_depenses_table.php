@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table ->foreignId('sous_caisse_id')->constrained() ->onDelete('cascade');
             $table ->foreignId('type_depense_id')->constrained();
+            $table ->foreignId('user_id')->constrained();
             $table->bigInteger('somme');
             $table->longText('type');
             $table->longText('desc')->nullable();

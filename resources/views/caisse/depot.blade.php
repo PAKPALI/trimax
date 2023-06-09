@@ -119,11 +119,7 @@
                                     <tr>
                                         <td>{{$op->id}}</td>
                                         <td class="text-primary">+{{$op->somme}}</td>
-                                        @if($op->banque)
-                                            <td>{{$op->banque}}</td>
-                                        @else
-                                            <td class="text-danger">Banque supprimer</td>
-                                        @endif
+                                        <td>{{$op->banque}}</td>
                                         <td>{{$op->desc}}</td>
                                         <td>{{$op->created_at}}</td>
                                     </tr>

@@ -66,7 +66,8 @@
                                     <input type="hidden" name="id" class="form-control" id="Id_p">
                                     <label>Selectionnez sous caisse</label>
                                     <select class="form-control select2" name="sousCaisse" style="width: 100%;">
-                                        <option value="" selected="selected"></option>
+                                        <option value="" selected="selected">Selectionnez sous caisse</option>
+                                        <option value="0">Aucune sous caisse</option>
                                         @foreach($SC as $sc)
                                             <option value="{{$sc -> id}}">{{strtoupper($sc -> nom)}}</option>
                                         @endforeach
@@ -152,7 +153,7 @@
                                 <tr>
                                     <td>{{$n++}}</td>
                                     <td>
-                                        @if($u->sous_caisses_id == null)
+                                        @if($u->sous_caisse_id == null)
                                             <span class="badge bg-danger">Pas de sous caisse</span>
                                         @else
                                             <span class="badge bg-success">{{strtoupper($u->sousCaisse->nom)}}</span>
@@ -433,8 +434,8 @@ $(function() {
 
             Swal.fire({
                 icon: "question",
-                title: "Etes vous sur de vouloir supprimer cette banque?",
-                text: "Cela pourrait entrainer la suppression automatique des donnés lié a cette banque",
+                title: "Etes vous sur de vouloir supprimer cet utilisateur?",
+                text: "Cela pourrait entrainer la suppression automatique des donnés lié a cet utilisateur",
                 showCancelButton: true,
                 cancelButtonText: 'NON',
                 confirmButtonText:  'OUI',
@@ -444,7 +445,7 @@ $(function() {
                 if (result.isConfirmed){
                     $.ajax({
                         type: 'POST',
-                        url: 'banque/delete',
+                        url: 'utilisateurs/delete',
                         //enctype: 'multipart/form-data',
                         data: $(_formNode).serialize(),
                         datatype: 'json',

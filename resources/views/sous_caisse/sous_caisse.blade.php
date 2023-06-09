@@ -125,6 +125,7 @@
                                     <th>Pays</th>
                                     <th>Ville</th>
                                     <th>Quartier</th>
+                                    <th>Somme</th>
                                     <th>Date</th>
                                     <th>Modifier</th>
                                     <th>Supprimer</th>
@@ -141,6 +142,7 @@
                                     <td>{{strtoupper($sc->pays->nom)}}</td>
                                     <td>{{strtoupper($sc->ville)}}</td>
                                     <td>{{strtoupper($sc->quartier)}}</td>
+                                    <td>{{strtoupper($sc->somme)}}</td>
                                     <td>{{$sc->created_at}}</td>
                                     <td>
                                         <form class="update">

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaysController;
 use App\Http\Controllers\UserController;
@@ -13,8 +15,22 @@ Route::get('accueil', function () {
 })->name('accueil');
 
 Route::get('', function () {
-    return view('login');
+    $User = User::all();
+
+    if($User->count() == 0){
+        return view('auth.register');
+    }else{
+        if (Auth::check()) {
+            return view('accueil');
+        }else{
+            return view('auth.login');
+        }
+    }
 });
+
+Route::get('connexion', function () {
+    return view('auth.login');
+})->name('conn');
 
 // pays
 Route::group(['prefix' => 'pays'], function () {
@@ -87,9 +103,13 @@ Route::group(['prefix' => 'utilisateurs'], function () {
 
     //post
     Route::post('ajouter', [UserController::class, "ajouter"]);
+    Route::post('ajouter_admin', [UserController::class, "ajouter_admin"]);
     Route::post('update', [UserController::class, 'update']);
     Route::post('parametre', [UserController::class, 'parametre']);
     Route::post('connected', [UserController::class, 'connected']);
     Route::post('status', [UserController::class, 'status']);
     Route::post('delete', [UserController::class, 'delete']);
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

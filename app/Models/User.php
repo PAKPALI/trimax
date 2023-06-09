@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Depense;
 use App\Models\SousCaisse;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -19,7 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'sous_caisses_id',
+        'sous_caisse_id',
         'nom',
         'email',
         'password',
@@ -29,7 +30,11 @@ class User extends Authenticatable
     ];
 
     public function sousCaisse(){
-        return  $this ->belongsTo(SousCaisse::class, 'sous_caisses_id');
+        return  $this ->belongsTo(SousCaisse::class);
+    }
+
+    public function depense(){
+        return $this->hasMany(Depense::class);
     }
 
     /**
