@@ -65,27 +65,37 @@ class LoginController extends Controller
             
             $user = User::where('email', $request-> email) -> get()->first();
 
-            if($user && Hash::check($request-> password, $user-> password)){
+            if($user -> connected == 1){
+                if($user && Hash::check($request-> password, $user-> password)){
 
-                Auth::login($user);
-                // $request->session()->regenerate();           
-
-                return response()->json([
-                    "status" => true,
-                    "reload" => true,
-                    "redirect_to" => route('accueil'),
-                    "title" => "CONNEXION REUSSI",
-                    'check' => Auth::check(),
-                    "msg" => "connexion reussie."
-                ]);
-
+                    Auth::login($user);
+                    // $request->session()->regenerate();           
+    
+                    return response()->json([
+                        "status" => true,
+                        "reload" => true,
+                        "redirect_to" => route('accueil'),
+                        "title" => "CONNEXION REUSSI",
+                        'check' => Auth::check(),
+                        "msg" => "connexion reussie."
+                    ]);
+    
+                }else{
+                    return response()->json([
+                        "status" => false,
+                        "reload" => true,
+                        'check' => Auth::check(),
+                        "title" => "CONNECTION ECHOUEE",
+                        "msg" => "Les informations du mail ou mot de passe sont incorrectes"
+                    ]);
+                }
             }else{
                 return response()->json([
                     "status" => false,
                     "reload" => true,
                     'check' => Auth::check(),
                     "title" => "CONNECTION ECHOUEE",
-                    "msg" => "Les informations du mail ou mot de passe sont incorrectes"
+                    "msg" => "Desole; vous netes pas autoriser a vous connecter"
                 ]);
             }
         }

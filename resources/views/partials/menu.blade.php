@@ -221,105 +221,106 @@
       <!-- /.sidebar -->
     </aside>
   @else
-  <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="#" class="brand-link">
-      <img src="{{asset('img/trimax.gif')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8" height="100" width="100">
-      <span class="brand-text font-weight-light"><h3>TRIMAX</h3></span>
-    </a>
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="#" class="brand-link">
+        <img src="{{asset('img/trimax.gif')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8" height="100" width="100">
+        <span class="brand-text font-weight-light"><h3>TRIMAX</h3></span>
+      </a>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{{asset('admin/man/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="{{asset('admin/man/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="#" class="d-block">{{ strtoupper(Auth::user()->nom)}}</a>
+          </div>
         </div>
-        <div class="info">
-          <a href="#" class="d-block">{{ strtoupper(Auth::user()->nom)}}</a>
-        </div>
+        @if (Auth::user()->connected == 1)
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+            @if (Auth::user()->sous_caisse_id ==null)
+            @else
+              <li class="nav-item menu-open">
+                <a href="" class="nav-link active">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>
+                    Tableau de bord
+                  </p>
+                </a>
+              </li>
+              <!-- gerer la sous caisse -->
+              <li class="nav-header"> GESTION SOUS-CAISSE</li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-boxes"></i>
+                  <p>
+                    Sous-caisse
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('sous_caisse.demande_depense')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Demande Dépense</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{route('sous_caisse.historique')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Historique opérations</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Historique dépenses</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            @endif
+
+            @if (Auth::user()->status_client ==1)
+              <!-- gerer les clients -->
+              <li class="nav-header"> GESTION LES CLIENTS</li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-boxes"></i>
+                  <p>
+                    CLIENTS
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ajouter client</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>operation sur client</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            @endif
+          </ul>
+        </nav>
+        @endif
+        <!-- /.sidebar-menu -->
       </div>
-
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          @if (Auth::user()->sous_caisse_id ==null)
-          @else
-            <li class="nav-item menu-open">
-              <a href="" class="nav-link active">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>
-                  Tableau de bord
-                </p>
-              </a>
-            </li>
-            <!-- gerer la sous caisse -->
-            <li class="nav-header"> GESTION SOUS-CAISSE</li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-boxes"></i>
-                <p>
-                  Sous-caisse
-                  <i class="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('sous_caisse.demande_depense')}}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Demande Dépense</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{route('sous_caisse.historique')}}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Historique opérations</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Historique dépenses</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          @endif
-
-          @if (Auth::user()->status_client ==1)
-            <!-- gerer les clients -->
-            <li class="nav-header"> GESTION LES CLIENTS</li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-boxes"></i>
-                <p>
-                  CLIENTS
-                  <i class="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Ajouter client</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>operation sur client</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          @endif
-        </ul>
-      </nav>
-      <!-- /.sidebar-menu -->
-    </div>
-    <!-- /.sidebar -->
-  </aside>
+      <!-- /.sidebar -->
+    </aside>
   @endif

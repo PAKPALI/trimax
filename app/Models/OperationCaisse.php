@@ -12,6 +12,6 @@ class OperationCaisse extends Model
     protected $fillable = ['somme','type_op','banque_id','sous_caisse','desc'];
 
     public function banque(){
-        return  $this ->belongsTo(Banque::class, 'banque_id');
+        return  $this ->belongsTo(Banque::class);
     }
 }

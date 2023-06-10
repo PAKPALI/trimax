@@ -103,7 +103,7 @@ class CaisseController extends Controller
                     OperationCaisse::create([
                         'somme' => str_replace(" ", "", $request-> somme),
                         'type_op' => "DEPOT",
-                        'banque' => $request-> banque,
+                        'banque_id' => $request-> banque,
                         'desc' => $request-> desc,
                     ]);
                     // envoyez une reponse

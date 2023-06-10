@@ -56,7 +56,7 @@
                                 <select class="form-control select2" name="banque" style="width: 100%;">
                                     <option value="" selected="selected"></option>
                                     @foreach($Banque as $b)
-                                        <option value="{{$b -> nom}}">{{strtoupper($b -> nom)}}</option>
+                                        <option value="{{$b -> id}}">{{strtoupper($b -> nom)}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -119,7 +119,7 @@
                                     <tr>
                                         <td>{{$op->id}}</td>
                                         <td class="text-primary">+{{$op->somme}}</td>
-                                        <td>{{$op->banque}}</td>
+                                        <td>{{strtoupper($op->banque->nom) }}</td>
                                         <td>{{$op->desc}}</td>
                                         <td>{{$op->created_at}}</td>
                                     </tr>

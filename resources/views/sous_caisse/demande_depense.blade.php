@@ -1,25 +1,31 @@
 @extends('layouts.layout')
 @section('content')
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>DEMANDE DEPENSE</h1> 
-                @if($s1)
-                    {{$s1->somme}}
+@if($s1)
+    <section class="content-header">
+        <div class="col-12 col-sm-12 col-md-12 mt-5">
+            <div class="info-box mb-3">
+                @if($s1->somme>0)
+                    <span class="info-box-icon bg-success elevation-1">FCFA</span>
+                @else
+                    <span class="info-box-icon bg-danger elevation-1">FCFA</span>
                 @endif
-            </div>
-            <div class="col-sm-6">
-                <!-- <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">depot</li>
-                </ol> -->
+                <div class="info-box-content">
+                    <span class="info-box-text">
+                        <h1>Somme Totale</h1>
+                    </span>
+                    <span class="info-box-number">
+                        <h2>
+                            {{$s1->somme}}
+                        </h2>
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-@if (Auth::user()->type_user ==2 AND Auth::user()->sous_caisse_id !=null)
+    </section>
+@endif
+
+@if (Auth::user()->type_user ==2 AND Auth::user()->sous_caisse_id !=null AND Auth::user()->connected == 1)
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -229,7 +235,7 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="example95" class="table table-bordered table-striped">
+                        <table id="example0" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>N*</th>
@@ -327,257 +333,259 @@
         </div>
 </section>
 @else
-<section class="content">
-    <div class="container-fluid">
-        <div class="row">
+    @if (Auth::user()->type_user ==1)
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
 
-            <div class="col-md-12">
+                    <div class="col-md-12">
 
-                <div class="modal fade" id="modal-default">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">MODIFIER DEPENSE</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form id="update">
-                                @csrf
-                                <div class="modal-body">
-                                    <input type="hidden" name="id" class="form-control" id="Id">
-
-                                    <div class="form-group">
-                                        <label for="exampleInputText3">Description</label>
-                                        <textarea id='Desc' name="desc" class="form-control" id="exampleInputText3"
-                                            placeholder="Enter la description"></textarea>
+                        <div class="modal fade" id="modal-default">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">MODIFIER DEPENSE</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
+                                    <form id="update">
+                                        @csrf
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id" class="form-control" id="Id">
+
+                                            <div class="form-group">
+                                                <label for="exampleInputText3">Description</label>
+                                                <textarea id='Desc' name="desc" class="form-control" id="exampleInputText3"
+                                                    placeholder="Enter la description"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer justify-content-between">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-warning">Modifier</button>
+                                        </div>
+                                    </form>
                                 </div>
-                                <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-warning">Modifier</button>
-                                </div>
-                            </form>
+                            </div>
+
+                        </div>
+                        <!-- liste de toutes les depenses -->
+                        <div class="card mt-5">
+                            <div class="card-header bg-warning">
+                                <h2 class="card-title">LISTE DE DEMANDES DE DEPENSES NON TRAITEES</h2>
+                            </div>
+
+                            <div class="card-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>N*</th>
+                                            <th>Sous caisse</th>
+                                            <th>Somme</th>
+                                            <th>Type dépense</th>
+                                            <th>Description</th>
+                                            <th>Utilisateur</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Modifier</th>
+                                            @if (Auth::user()->type_user ==1)
+                                            <th>Valider</th>
+                                            <th>Refuser</th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $n = 1
+                                        @endphp
+                                        @foreach($Depense as $d)
+                                            <tr>
+                                                <td>{{$n++}}</td>
+                                                <td>{{strtoupper($d->sousCaisse->nom)}}</td>
+                                                <td>{{strtoupper($d->somme)}}</td>
+                                                <td>{{strtoupper($d->type)}}</td>
+                                                <td>{{$d->desc}}</td>
+                                                <td>{{$d->user->nom}}</td>
+                                                <td>
+                                                    @if($d->status == 0)
+                                                        <span class="badge bg-danger">Rejetée</span>
+                                                    @elseif($d->status == 1)
+                                                        <span class="badge bg-success">Acceptée</span>
+                                                    @else
+                                                        <span class="badge bg-warning">Non traitée</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{$d->created_at}}</td>
+                                                <!-- update -->
+                                                @if($d->status == 2)
+                                                    <td>
+                                                        <form class="update">
+                                                            @csrf
+                                                            <input type="hidden" value="{{$d -> id}}" name="id">
+                                                            <input type="hidden" value="{{$d -> desc}}" name="desc">
+                                                            <button type="submit" class="btn btn-warning" data-toggle="modal"
+                                                                data-target="#modal-default">
+                                                                <i class='fas fa-edit'></i>
+                                                                Modifier
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                @else
+                                                    <td>
+                                                        <form class="update">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-warning" disabled>
+                                                                <i class='fas fa-edit'></i>
+                                                                Modifier
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                @endif
+                                                <!-- action -->
+                                                @if (Auth::user()->type_user ==1)
+                                                    @if($d->status == 2)
+                                                        <td  style="text-align: center;">
+                                                            <form class="valider">
+                                                                @csrf
+                                                                <input type="hidden" id="id" value="{{$d -> id}}" name="id">
+                                                                <input type="hidden" id="somme" value="{{$d -> somme}}" name="somme">
+                                                                <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                        <td  style="text-align: center;">
+                                                            <form class="rejeter">
+                                                                @csrf
+                                                                <input type="hidden" id="id" value="{{$d -> id}}" name="id">
+                                                                <button type="submit" class="btn btn-danger"><i class="far fa-times-circle"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    @else
+                                                    <td  style="text-align: center;">
+                                                        <button type="submit" class="btn btn-success" disabled><i class="fas fa-check"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td  style="text-align: center;">
+                                                        <button type="submit" class="btn btn-danger" disabled><i class="far fa-times-circle"></i>
+                                                        </button>
+                                                    </td>
+                                                    @endif
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+
+                        <!-- liste des depenses valides -->
+                        <div class="card mt-5">
+                            <div class="card-header bg-success">
+                                <h2 class="card-title">LISTE DE DEMANDES DE DEPENSES VALIDEES</h2>
+                            </div>
+
+                            <div class="card-body">
+                                <table id="example95" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>N*</th>
+                                            <th>Sous caisse</th>
+                                            <th>Somme</th>
+                                            <th>Type dépense</th>
+                                            <th>Description</th>
+                                            <th>Utilisateur</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $n = 1
+                                        @endphp
+                                        @foreach($Depense_v as $d)
+                                            <tr>
+                                                <td>{{$n++}}</td>
+                                                <td>{{strtoupper($d->sousCaisse->nom)}}</td>
+                                                <td>{{strtoupper($d->somme)}}</td>
+                                                <td>{{strtoupper($d->type)}}</td>
+                                                <td>{{$d->desc}}</td>
+                                                <td>{{$d->user->nom}}</td>
+                                                <td>
+                                                    @if($d->status == 0)
+                                                        <span class="badge bg-danger">Rejetée</span>
+                                                    @elseif($d->status == 1)
+                                                        <span class="badge bg-success">Acceptée</span>
+                                                    @else
+                                                        <span class="badge bg-warning">Non traitée</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{$d->created_at}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+
+                        <!-- liste des depenses rejetes -->
+                        <div class="card mt-5">
+                            <div class="card-header bg-danger">
+                                <h2 class="card-title">LISTE DE DEMANDES DE DEPENSES REJETEES</h2>
+                            </div>
+
+                            <div class="card-body">
+                                <table id="example3" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>N*</th>
+                                            <th>Sous caisse</th>
+                                            <th>Somme</th>
+                                            <th>Type dépense</th>
+                                            <th>Description</th>
+                                            <th>Utilisateur</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $n = 1
+                                        @endphp
+                                        @foreach($Depense_r as $d)
+                                            <tr>
+                                                <td>{{$n++}}</td>
+                                                <td>{{strtoupper($d->sousCaisse->nom)}}</td>
+                                                <td>{{strtoupper($d->somme)}}</td>
+                                                <td>{{strtoupper($d->type)}}</td>
+                                                <td>{{$d->desc}}</td>
+                                                <td>{{$d->user->nom}}</td>
+                                                <td>
+                                                    @if($d->status == 0)
+                                                        <span class="badge bg-danger">Rejetée</span>
+                                                    @elseif($d->status == 1)
+                                                        <span class="badge bg-success">Acceptée</span>
+                                                    @else
+                                                        <span class="badge bg-warning">Non traitée</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{$d->created_at}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                         </div>
                     </div>
-
                 </div>
-                <!-- liste de toutes les depenses -->
-                <div class="card mt-5">
-                    <div class="card-header bg-warning">
-                        <h2 class="card-title">LISTE DE DEMANDES DE DEPENSES NON TRAITEES</h2>
-                    </div>
-
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>N*</th>
-                                    <th>Sous caisse</th>
-                                    <th>Somme</th>
-                                    <th>Type dépense</th>
-                                    <th>Description</th>
-                                    <th>Utilisateur</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                    <th>Modifier</th>
-                                    @if (Auth::user()->type_user ==1)
-                                    <th>Valider</th>
-                                    <th>Refuser</th>
-                                    @endif
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $n = 1
-                                @endphp
-                                @foreach($Depense as $d)
-                                    <tr>
-                                        <td>{{$n++}}</td>
-                                        <td>{{strtoupper($d->sousCaisse->nom)}}</td>
-                                        <td>{{strtoupper($d->somme)}}</td>
-                                        <td>{{strtoupper($d->type)}}</td>
-                                        <td>{{$d->desc}}</td>
-                                        <td>{{$d->user->nom}}</td>
-                                        <td>
-                                            @if($d->status == 0)
-                                                <span class="badge bg-danger">Rejetée</span>
-                                            @elseif($d->status == 1)
-                                                <span class="badge bg-success">Acceptée</span>
-                                            @else
-                                                <span class="badge bg-warning">Non traitée</span>
-                                            @endif
-                                        </td>
-                                        <td>{{$d->created_at}}</td>
-                                        <!-- update -->
-                                        @if($d->status == 2)
-                                            <td>
-                                                <form class="update">
-                                                    @csrf
-                                                    <input type="hidden" value="{{$d -> id}}" name="id">
-                                                    <input type="hidden" value="{{$d -> desc}}" name="desc">
-                                                    <button type="submit" class="btn btn-warning" data-toggle="modal"
-                                                        data-target="#modal-default">
-                                                        <i class='fas fa-edit'></i>
-                                                        Modifier
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        @else
-                                            <td>
-                                                <form class="update">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-warning" disabled>
-                                                        <i class='fas fa-edit'></i>
-                                                        Modifier
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        @endif
-                                        <!-- action -->
-                                        @if (Auth::user()->type_user ==1)
-                                            @if($d->status == 2)
-                                                <td  style="text-align: center;">
-                                                    <form class="valider">
-                                                        @csrf
-                                                        <input type="hidden" id="id" value="{{$d -> id}}" name="id">
-                                                        <input type="hidden" id="somme" value="{{$d -> somme}}" name="somme">
-                                                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                                <td  style="text-align: center;">
-                                                    <form class="rejeter">
-                                                        @csrf
-                                                        <input type="hidden" id="id" value="{{$d -> id}}" name="id">
-                                                        <button type="submit" class="btn btn-danger"><i class="far fa-times-circle"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            @else
-                                            <td  style="text-align: center;">
-                                                <button type="submit" class="btn btn-success" disabled><i class="fas fa-check"></i>
-                                                </button>
-                                            </td>
-                                            <td  style="text-align: center;">
-                                                <button type="submit" class="btn btn-danger" disabled><i class="far fa-times-circle"></i>
-                                                </button>
-                                            </td>
-                                            @endif
-                                        @endif
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                </div>
-
-                <!-- liste des depenses valides -->
-                <div class="card mt-5">
-                    <div class="card-header bg-success">
-                        <h2 class="card-title">LISTE DE DEMANDES DE DEPENSES VALIDEES</h2>
-                    </div>
-
-                    <div class="card-body">
-                        <table id="example95" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>N*</th>
-                                    <th>Sous caisse</th>
-                                    <th>Somme</th>
-                                    <th>Type dépense</th>
-                                    <th>Description</th>
-                                    <th>Utilisateur</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $n = 1
-                                @endphp
-                                @foreach($Depense_v as $d)
-                                    <tr>
-                                        <td>{{$n++}}</td>
-                                        <td>{{strtoupper($d->sousCaisse->nom)}}</td>
-                                        <td>{{strtoupper($d->somme)}}</td>
-                                        <td>{{strtoupper($d->type)}}</td>
-                                        <td>{{$d->desc}}</td>
-                                        <td>{{$d->user->nom}}</td>
-                                        <td>
-                                            @if($d->status == 0)
-                                                <span class="badge bg-danger">Rejetée</span>
-                                            @elseif($d->status == 1)
-                                                <span class="badge bg-success">Acceptée</span>
-                                            @else
-                                                <span class="badge bg-warning">Non traitée</span>
-                                            @endif
-                                        </td>
-                                        <td>{{$d->created_at}}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                </div>
-
-                <!-- liste des depenses rejetes -->
-                <div class="card mt-5">
-                    <div class="card-header bg-danger">
-                        <h2 class="card-title">LISTE DE DEMANDES DE DEPENSES REJETEES</h2>
-                    </div>
-
-                    <div class="card-body">
-                        <table id="example3" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>N*</th>
-                                    <th>Sous caisse</th>
-                                    <th>Somme</th>
-                                    <th>Type dépense</th>
-                                    <th>Description</th>
-                                    <th>Utilisateur</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $n = 1
-                                @endphp
-                                @foreach($Depense_r as $d)
-                                    <tr>
-                                        <td>{{$n++}}</td>
-                                        <td>{{strtoupper($d->sousCaisse->nom)}}</td>
-                                        <td>{{strtoupper($d->somme)}}</td>
-                                        <td>{{strtoupper($d->type)}}</td>
-                                        <td>{{$d->desc}}</td>
-                                        <td>{{$d->user->nom}}</td>
-                                        <td>
-                                            @if($d->status == 0)
-                                                <span class="badge bg-danger">Rejetée</span>
-                                            @elseif($d->status == 1)
-                                                <span class="badge bg-success">Acceptée</span>
-                                            @else
-                                                <span class="badge bg-warning">Non traitée</span>
-                                            @endif
-                                        </td>
-                                        <td>{{$d->created_at}}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                </div>
-            </div>
-        </div>
-</section>
+        </section>
+    @endif
 @endif
 
 <script>
