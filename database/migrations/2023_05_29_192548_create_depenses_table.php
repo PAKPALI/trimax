@@ -22,6 +22,7 @@ return new class extends Migration
             $table->longText('type');
             $table->longText('desc')->nullable();
             $table->Integer('status')->default('2');
+            $table->longText('validateur')->nullable();
             $table->timestamps();
         });
     }

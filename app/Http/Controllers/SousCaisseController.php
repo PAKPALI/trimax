@@ -344,13 +344,13 @@ class SousCaisseController extends Controller
             $nouvelleSomme = $sousCaisse->somme - $Depense->somme;
 
             if( $nouvelleSomme > 0){
-
                 $sousCaisse -> update([
                     'somme' => $nouvelleSomme,
                 ]);
     
                 $Depense -> update([
                     'status' => '1',
+                    'validateur' => Auth::user()->nom,
                 ]);
     
                 return response()->json([
