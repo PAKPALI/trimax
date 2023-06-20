@@ -127,6 +127,19 @@
     <script>
         $(function () {
             $('.select2').select2()
+
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+            //Date picker
+            $('#reservationdate').datetimepicker({
+                format: 'L'
+            });
+
+            $('#reservationdate1').datetimepicker({
+                format: 'L'
+            });
             
             $("#example1").DataTable({
             "responsive": true, "lengthChange": false, "autoWidth": false,

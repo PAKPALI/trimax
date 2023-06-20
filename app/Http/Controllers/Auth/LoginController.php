@@ -66,7 +66,7 @@ class LoginController extends Controller
             $user = User::where('email', $request-> email) -> get()->first();
 
             if($user && Hash::check($request-> password, $user-> password)){
-                if($user->connected == 1){
+                if($user->type_user == 1){
                     Auth::login($user);
                     // $request->session()->regenerate();           
 
@@ -79,13 +79,27 @@ class LoginController extends Controller
                         "msg" => "connexion reussie."
                     ]);
                 }else{
-                    return response()->json([
-                        "status" => false,
-                        "reload" => true,
-                        'check' => Auth::check(),
-                        "title" => "CONNECTION ECHOUEE",
-                        "msg" => "Vous n'etes pas autoriser a vous connecter"
-                    ]);
+                    if($user->connected == 1){
+                        Auth::login($user);
+                        // $request->session()->regenerate();           
+    
+                        return response()->json([
+                            "status" => true,
+                            "reload" => true,
+                            "redirect_to" => route('accueil'),
+                            "title" => "CONNEXION REUSSI",
+                            'check' => Auth::check(),
+                            "msg" => "connexion reussie."
+                        ]);
+                    }else{
+                        return response()->json([
+                            "status" => false,
+                            "reload" => true,
+                            'check' => Auth::check(),
+                            "title" => "CONNECTION ECHOUEE",
+                            "msg" => "Vous n'etes pas autoriser a vous connecter"
+                        ]);
+                    }
                 }
             }else{
                 return response()->json([

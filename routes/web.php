@@ -71,10 +71,12 @@ Route::group(['prefix' => 'caisse'], function () {
     // Get
     Route::get('depot', [CaisseController::class, "depot"])->name('caisse.depot');
     Route::get('retrait', [CaisseController::class, "retrait"])->name('caisse.retrait');
+    Route::get('operation', [CaisseController::class, "operation"])->name('caisse.operation');
 
     //post
     Route::post('depot', [CaisseController::class, "ajoutDepot"]);
     Route::post('retrait', [CaisseController::class, "ajoutRetrait"]);
+    Route::post('filterTable', [CaisseController::class, 'filterTable'])->name('filterTable');
 });
 
 
