@@ -65,12 +65,11 @@ class LoginController extends Controller
             
             $user = User::where('email', $request-> email) -> get()->first();
 
-            if($user -> connected == 1){
-                if($user && Hash::check($request-> password, $user-> password)){
-
+            if($user && Hash::check($request-> password, $user-> password)){
+                if($user->connected == 1){
                     Auth::login($user);
                     // $request->session()->regenerate();           
-    
+
                     return response()->json([
                         "status" => true,
                         "reload" => true,
@@ -79,14 +78,13 @@ class LoginController extends Controller
                         'check' => Auth::check(),
                         "msg" => "connexion reussie."
                     ]);
-    
                 }else{
                     return response()->json([
                         "status" => false,
                         "reload" => true,
                         'check' => Auth::check(),
                         "title" => "CONNECTION ECHOUEE",
-                        "msg" => "Les informations du mail ou mot de passe sont incorrectes"
+                        "msg" => "Vous n'etes pas autoriser a vous connecter"
                     ]);
                 }
             }else{
@@ -95,7 +93,7 @@ class LoginController extends Controller
                     "reload" => true,
                     'check' => Auth::check(),
                     "title" => "CONNECTION ECHOUEE",
-                    "msg" => "Desole; vous netes pas autoriser a vous connecter"
+                    "msg" => "Les informations du mail ou mot de passe sont incorrectes"
                 ]);
             }
         }
