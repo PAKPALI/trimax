@@ -290,17 +290,12 @@ class CaisseController extends Controller
         ]);
 
         $typeOp = $request-> type;
-        $d = $request-> Date1;
-        $Date1 = Carbon::createFromFormat('Y-m-d', $d)->toDateString();
+        $Date1 = $request-> Date1;
         $Date2 = $request-> Date2;
 
         if($typeOp == "TOUT"){
-
-            //article-typeOP
             if($typeOp AND !$Date1 AND !$Date2){
-
                 $Operation = OperationCaisse::orderBy('created_at', 'desc')->get();
-
                 if($Operation -> count() > "0"){
                     $qte_total_depot = $Operation -> where('type_op', "DEPOT")->sum('somme');
                     $qte_total_retrait = $Operation -> where('type_op', "RETRAIT")->sum('somme');
@@ -328,10 +323,10 @@ class CaisseController extends Controller
                 }
 
             }elseif($typeOp AND $Date1 AND $Date2){
-
+                $ConvertDate1 = Carbon::createFromFormat('m/d/Y', $request-> Date1)->toDateString();
+                $ConvertDate2 = Carbon::createFromFormat('m/d/Y', $request-> Date2)->toDateString();
                 if($Date1 == $Date2){
-                    $Date1 = $Date1->format('Y-m-d');
-                    $Operation = OperationCaisse::orderBy('created_at', 'desc')->whereDate('created_at', $Date1)->get();
+                    $Operation = OperationCaisse::orderBy('created_at', 'desc')->whereDate('created_at', $ConvertDate1 )->get();
 
                     if($Operation -> count() > "0"){
                         $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
@@ -359,7 +354,94 @@ class CaisseController extends Controller
                         ]);
                     }
                 }else{
-                    $Operation = OperationCaisse::orderBy('created_at', 'desc')->whereBetween('created_at', [$Date1, $Date2])->get();
+                    if($Date1 <=$Date2){
+                        $Operation = OperationCaisse::orderBy('created_at', 'desc')->whereBetween('created_at', [$ConvertDate1.' 00:00:00', $ConvertDate2.' 23:59:59'])->get();
+
+                        if($Operation -> count() > "0"){
+                            $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
+                            $qte_total_retrait = $Operation -> where('type_operation', "RETRAIT")->sum('somme');
+                            $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                            $TypeErreur = "2";
+                            $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                            return view('caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'qte_total_depot' => $qte_total_depot,
+                                'qte_total_retrait' => $qte_total_retrait,
+                                'qte_restante' => $qte_restante,
+                            ]);
+                        }else{
+                            $TypeErreur = "1";
+                            $Message= "Résultat non trouvé";
+
+                            return view('caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'qte_total_depot' => "",
+                                'qte_total_retrait' =>"",
+                                'qte_restante' => "",
+                            ]);
+                        }
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "La date de fin doit etre superieur a la date de debut ; Le sytème enverra la liste de toutes les opérations concernant le type d'opération choisit consultable dans le tableau ci dessous!";
+
+                        $Operation = OperationCaisse::orderBy('created_at', 'desc')->get();
+
+                        return view('caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'qte_total_depot' => "",
+                            'qte_total_retrait' =>"",
+                            'qte_restante' => "",
+                        ]);
+                    }
+                }
+            }else{
+                $Operation = OperationCaisse::orderBy('created_at', 'desc')->get();
+
+                $TypeErreur = "1";
+                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations concernant l'article et le type d'opération choisit consultable dans le tableau ci dessous!";
+
+                return view('caisse.operation',compact('TypeErreur','Message'),[
+                    'Operation' => $Operation,
+                    'qte_total_depot' => "",
+                    'qte_total_retrait' =>"" ,
+                    'qte_restante' => "",
+                ]);
+            }
+        }elseif($typeOp == "DEPOT"){
+            if($typeOp AND !$Date1 AND !$Date2){
+                $Operation = OperationCaisse::orderBy('created_at', 'desc')-> where('type_Op', $typeOp)->get();
+                if($Operation -> count() > "0"){
+                    $qte_total_depot = $Operation -> where('type_op', "DEPOT")->sum('somme');
+                    $qte_total_retrait = $Operation -> where('type_op', "RETRAIT")->sum('somme');
+                    $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                    $TypeErreur = "2";
+                    $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                    return view('caisse.operation',compact('TypeErreur','Message'),[
+                        'Operation' => $Operation,
+                        'qte_total_depot' => $qte_total_depot,
+                        'qte_total_retrait' => $qte_total_retrait,
+                        'qte_restante' => $qte_restante,
+                    ]);
+                }else{
+                    $TypeErreur = "1";
+                    $Message= "Résultat non trouvé";
+
+                    return view('caisse.operation',compact('TypeErreur','Message'),[
+                        'qte_total_depot' => "",
+                        'qte_total_retrait' =>"" ,
+                        'qte_restante' => "",
+                    ]);
+                }
+
+            }elseif($typeOp AND $Date1 AND $Date2){
+                $ConvertDate1 = Carbon::createFromFormat('m/d/Y', $request-> Date1)->toDateString();
+                $ConvertDate2 = Carbon::createFromFormat('m/d/Y', $request-> Date2)->toDateString();
+                if($Date1 == $Date2){
+                    $Operation = OperationCaisse::orderBy('created_at', 'desc')-> where('type_Op', $typeOp)->whereDate('created_at', $ConvertDate1 )->get();
 
                     if($Operation -> count() > "0"){
                         $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
@@ -382,16 +464,173 @@ class CaisseController extends Controller
                         return view('caisse.operation',compact('TypeErreur','Message'),[
                             'Operation' => $Operation,
                             'qte_total_depot' => "",
-                            'qte_total_retrait' =>"" ,
+                            'qte_total_retrait' => "",
+                            'qte_restante' => "",
+                        ]);
+                    }
+                }else{
+                    if($Date1 <=$Date2){
+                        $Operation = OperationCaisse::orderBy('created_at', 'desc')->where('type_Op', $typeOp)->whereBetween('created_at', [$ConvertDate1.' 00:00:00', $ConvertDate2.' 23:59:59'])->get();
+
+                        if($Operation -> count() > "0"){
+                            $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
+                            $qte_total_retrait = $Operation -> where('type_operation', "RETRAIT")->sum('somme');
+                            $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                            $TypeErreur = "2";
+                            $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                            return view('caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'qte_total_depot' => $qte_total_depot,
+                                'qte_total_retrait' => $qte_total_retrait,
+                                'qte_restante' => $qte_restante,
+                            ]);
+                        }else{
+                            $TypeErreur = "1";
+                            $Message= "Résultat non trouvé";
+
+                            return view('caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'qte_total_depot' => "",
+                                'qte_total_retrait' =>"",
+                                'qte_restante' => "",
+                            ]);
+                        }
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "La date de fin doit etre superieur a la date de debut ; Le sytème enverra la liste de toutes les opérations concernant le type d'opération choisit consultable dans le tableau ci dessous!";
+
+                        $Operation = OperationCaisse::orderBy('created_at', 'desc')->where('type_Op', $typeOp)->get();
+
+                        return view('caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'qte_total_depot' => "",
+                            'qte_total_retrait' =>"",
                             'qte_restante' => "",
                         ]);
                     }
                 }
             }else{
-                $Operation = OperationCaisse::orderBy('created_at', 'desc')->get();
+                $Operation = OperationCaisse::orderBy('created_at', 'desc')->where('type_Op', $typeOp)->get();
 
                 $TypeErreur = "1";
-                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations concernant l'article et le type d'opération choisit consultable dans le tableau ci dessous!";
+                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations concernant le type d'opération choisit consultable dans le tableau ci dessous!";
+
+                return view('caisse.operation',compact('TypeErreur','Message'),[
+                    'Operation' => $Operation,
+                    'qte_total_depot' => "",
+                    'qte_total_retrait' =>"" ,
+                    'qte_restante' => "",
+                ]);
+            }
+        }else{
+            if($typeOp AND !$Date1 AND !$Date2){
+                $Operation = OperationCaisse::orderBy('created_at', 'desc')-> where('type_Op', $typeOp)->get();
+                if($Operation -> count() > "0"){
+                    $qte_total_depot = $Operation -> where('type_op', "DEPOT")->sum('somme');
+                    $qte_total_retrait = $Operation -> where('type_op', "RETRAIT")->sum('somme');
+                    $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                    $TypeErreur = "2";
+                    $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                    return view('caisse.operation',compact('TypeErreur','Message'),[
+                        'Operation' => $Operation,
+                        'qte_total_depot' => $qte_total_depot,
+                        'qte_total_retrait' => $qte_total_retrait,
+                        'qte_restante' => $qte_restante,
+                    ]);
+                }else{
+                    $TypeErreur = "1";
+                    $Message= "Résultat non trouvé";
+
+                    return view('caisse.operation',compact('TypeErreur','Message'),[
+                        'qte_total_depot' => "",
+                        'qte_total_retrait' =>"" ,
+                        'qte_restante' => "",
+                    ]);
+                }
+
+            }elseif($typeOp AND $Date1 AND $Date2){
+                $ConvertDate1 = Carbon::createFromFormat('m/d/Y', $request-> Date1)->toDateString();
+                $ConvertDate2 = Carbon::createFromFormat('m/d/Y', $request-> Date2)->toDateString();
+                if($Date1 == $Date2){
+                    $Operation = OperationCaisse::orderBy('created_at', 'desc')-> where('type_Op', $typeOp)->whereDate('created_at', $ConvertDate1 )->get();
+
+                    if($Operation -> count() > "0"){
+                        $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
+                        $qte_total_retrait = $Operation -> where('type_operation', "RETRAIT")->sum('somme');
+                        $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                        $TypeErreur = "2";
+                        $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                        return view('caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'qte_total_depot' => $qte_total_depot,
+                            'qte_total_retrait' => $qte_total_retrait,
+                            'qte_restante' => $qte_restante,
+                        ]);
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "Résultat non trouvé";
+
+                        return view('caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'qte_total_depot' => "",
+                            'qte_total_retrait' => "",
+                            'qte_restante' => "",
+                        ]);
+                    }
+                }else{
+                    if($Date1 <=$Date2){
+                        $Operation = OperationCaisse::orderBy('created_at', 'desc')->where('type_Op', $typeOp)->whereBetween('created_at', [$ConvertDate1.' 00:00:00', $ConvertDate2.' 23:59:59'])->get();
+
+                        if($Operation -> count() > "0"){
+                            $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
+                            $qte_total_retrait = $Operation -> where('type_operation', "RETRAIT")->sum('somme');
+                            $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                            $TypeErreur = "2";
+                            $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                            return view('caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'qte_total_depot' => $qte_total_depot,
+                                'qte_total_retrait' => $qte_total_retrait,
+                                'qte_restante' => $qte_restante,
+                            ]);
+                        }else{
+                            $TypeErreur = "1";
+                            $Message= "Résultat non trouvé";
+
+                            return view('caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'qte_total_depot' => "",
+                                'qte_total_retrait' =>"",
+                                'qte_restante' => "",
+                            ]);
+                        }
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "La date de fin doit etre superieur a la date de debut ; Le sytème enverra la liste de toutes les opérations concernant le type d'opération choisit consultable dans le tableau ci dessous!";
+
+                        $Operation = OperationCaisse::orderBy('created_at', 'desc')->where('type_Op', $typeOp)->get();
+
+                        return view('caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'qte_total_depot' => "",
+                            'qte_total_retrait' =>"",
+                            'qte_restante' => "",
+                        ]);
+                    }
+                }
+            }else{
+                $Operation = OperationCaisse::orderBy('created_at', 'desc')->where('type_Op', $typeOp)->get();
+
+                $TypeErreur = "1";
+                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations concernant le type d'opération choisit consultable dans le tableau ci dessous!";
 
                 return view('caisse.operation',compact('TypeErreur','Message'),[
                     'Operation' => $Operation,
