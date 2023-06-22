@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>HISTORIQUE OPERATION</h1>
+                <h1>HISTORIQUE DES OPERATIONS DE LA SOUS CAISSE</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -23,59 +23,116 @@
 
             <div class="col-md-12">
 
-                <div class="modal fade" id="modal-default">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">MODIFIER BANQUE</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form id="mp">
-                                @csrf
-                                <div class="modal-body">
-                                    <input type="hidden" name="id" class="form-control" id="Id">
-                                    <input type="text" name="nom" class="form-control" id="Nom" placeholder="Enter le nom du pays">
-                                </div>
-                                <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-warning">Modifier</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
 
-                </div>
-
-                <div class="card card-primary">
+                <div class="card card-dark">
                     <div class="card-header">
                         <h3 class="card-title"><small></small></h3>
                     </div>
 
-                    <form id="add">
+                    <form action="{{ route('filterTableSousCaisse') }}" method="post">
                         @csrf
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="exampleInputText0">Ajouter banque</label>
-                                <input type="text" name="nom" class="form-control" id="exampleInputText0"
-                                    placeholder="Enter le nom de la banque">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="exampleInputText0">Sous caisse</label>
+                                        <select class="form-control select2" name="sousCaisse" style="width: 100%;">
+                                            <option value="" selected="selected"></option>
+                                            @foreach($SC as $sc)
+                                                <option value="{{$sc->id}}">{{$sc->nom}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="type" value="TOUT" class="form-control" placeholder="">
+                                </div>
+                                
                             </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Date de debut:</label>
+                                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                            <input type="text" name="Date1" class="form-control datetimepicker-input" data-target="#reservationdate" />
+                                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Date de fin:</label>
+                                        <div class="input-group date" id="reservationdate1" data-target-input="nearest">
+                                            <input type="text" name="Date2" class="form-control datetimepicker-input" data-target="#reservationdate1" />
+                                            <div class="input-group-append" data-target="#reservationdate1" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div id="loader" class="text-center">
                                 <img class="animation__shake" src="{{asset('img/trimax.gif')}}" alt="TRIMAX_Logo"
                                     height="70" width="70">
                             </div>
+
+                            @if($errors ->any())
+                                @foreach($errors -> all() as $error)
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                {{$error}}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span style="background-color: white;" aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
+                            @if($TypeErreur == "1")
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {{$Message}}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span style="background-color: white;" aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                            @endif
+
+                            @if($TypeErreur == "2")
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            {{$Message}}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span style="background-color: white;" aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                            @endif
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Valider</button>
+                            <button type="submit" class="btn btn-dark">Valider</button>
+                            <a href="{{route('sous_caisse.operation')}}" class="btn btn-success">Voir toutes les operations</a>
                         </div>
                     </form>
                 </div>
 
                 <div class="card mt-5">
-                    <div class="card-header bg-primary">
-                        <h2 class="card-title">LISTE DES BANQUES</h2>
+                    <div class="card-header bg-dark">
+                        <h2 class="card-title">LISTE DES OPERATIONS DE LA SOUS CAISSE</h2>
                     </div>
 
                     <div class="card-body">
@@ -83,40 +140,34 @@
                             <thead>
                                 <tr>
                                     <th>N*</th>
-                                    <th>Nom</th>
-                                    <th>Date</th>
-                                    <th>Modifier</th>
-                                    <th>Supprimer</th>
+                                    <th>Somme</th>
+                                    <th>Sous caisse</th>
+                                    <th>Description</th>
+                                    <th>Date de creation</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php
                                     $n = 1
                                 @endphp
-                                @foreach($Banque as $banque)
-                                <tr>
-                                    <td>{{$n++}}</td>
-                                    <td>{{strtoupper($banque->nom)}}</td>
-                                    <td>{{$banque->created_at}}</td>
-                                    <td>
-                                        <form class="update">
-                                            @csrf
-                                            <input type="hidden" value="{{$banque -> id}}" name="id">
-                                            <input type="hidden" value="{{$banque -> nom}}" name="nom">
-                                            <button type="submit" class="btn btn-warning" data-toggle="modal" data-target="#modal-default">
-                                                <i class='bx bx-edit'></i>
-                                                Modifier
-                                            </button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <form class="delete">
-                                            @csrf
-                                            <input type="hidden" id="id" value="{{$banque -> id}}" name="id">
-                                            <button type="submit" class="btn btn-danger"><i class='bx bx-trash'></i> Supprimer</button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                @foreach($Operation as $op)
+                                    <tr>
+                                        <td>{{$n++}}</td>
+                                        <!-- somme -->
+                                        <td style="color:blue;">
+                                            +{{$op -> somme}}
+                                        </td>
+                                        <!-- sous caisse -->
+                                        @if($op->sous_caisse_id)
+                                            <td>{{strtoupper($op->sousCaisse->nom)}}</td>
+                                        @else
+                                            <td>-</td>
+                                        @endif
+                                        <!-- description -->
+                                        <td>{{strtoupper($op->desc)}}</td>
+                                        <!-- created at -->
+                                        <td>{{strtoupper($op->created_at)}}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

@@ -124,7 +124,7 @@ class CaisseController extends Controller
                     OperationCaisse::create([
                         'somme' => str_replace(" ", "", $request-> somme),
                         'type_op' => "DEPOT",
-                        'banque' => $request-> banque,
+                        'banque_id' => $request-> banque,
                         'desc' => $request-> desc,
                     ]);
                     // envoyez une reponse
@@ -400,7 +400,7 @@ class CaisseController extends Controller
                 $Operation = OperationCaisse::orderBy('created_at', 'desc')->get();
 
                 $TypeErreur = "1";
-                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations concernant l'article et le type d'opération choisit consultable dans le tableau ci dessous!";
+                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations concernant le type d'opération choisit consultable dans le tableau ci dessous!";
 
                 return view('caisse.operation',compact('TypeErreur','Message'),[
                     'Operation' => $Operation,

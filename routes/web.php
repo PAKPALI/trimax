@@ -71,7 +71,7 @@ Route::group(['prefix' => 'caisse'], function () {
     // Get
     Route::get('depot', [CaisseController::class, "depot"])->name('caisse.depot');
     Route::get('retrait', [CaisseController::class, "retrait"])->name('caisse.retrait');
-    Route::get('operation', [CaisseController::class, "operation"])->name('caisse.operation');
+    Route::get('operation_caisse', [CaisseController::class, "operation"])->name('caisse.operation');
 
     //post
     Route::post('depot', [CaisseController::class, "ajoutDepot"]);
@@ -85,7 +85,7 @@ Route::group(['prefix' => 'sous_caisse'], function () {
     // Get
     Route::get('', [SousCaisseController::class, "sous_caisse"])->name('sous_caisse');
     Route::get('demande_depense', [SousCaisseController::class, "demande_depense"])->name('sous_caisse.demande_depense');
-    Route::get('historique_operation', [SousCaisseController::class, "historique"])->name('sous_caisse.historique');
+    Route::get('operation_sous_caisse', [SousCaisseController::class, "operation"])->name('sous_caisse.operation');
 
     //post
     Route::post('ajouter', [SousCaisseController::class, "ajouter"]);
@@ -96,6 +96,7 @@ Route::group(['prefix' => 'sous_caisse'], function () {
     Route::post('update_depense', [SousCaisseController::class, 'update_depense']);
     Route::post('valider_depense', [SousCaisseController::class, 'valider_depense']);
     Route::post('rejeter_depense', [SousCaisseController::class, 'rejeter_depense']);
+    Route::post('filterTable', [SousCaisseController::class, 'filterTable'])->name('filterTableSousCaisse');
 });
 
 // user

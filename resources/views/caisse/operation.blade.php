@@ -171,7 +171,7 @@
                                         @endif
                                         <!-- banque -->
                                         @if($op->banque_id)
-                                            <td>{{strtoupper($op->banque_id)}}</td>
+                                            <td>{{strtoupper($op->banque->nom)}}</td>
                                         @else
                                             <td>-</td>
                                         @endif

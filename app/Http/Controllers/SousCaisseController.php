@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Pays;
 use App\Models\Depense;
 use App\Models\SousCaisse;
@@ -411,5 +412,163 @@ class SousCaisseController extends Controller
             "title" => "VALIDATION REJETEE",
             "msg" => "validation rejetee avec succes"
         ]);
+    }
+
+    public function operation()
+    {
+        $TypeErreur = "";
+        $Message= "";
+
+        $Operation = OperationSousCaisse::all();
+        $SC = SousCaisse::all();
+        return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+            'Operation' => $Operation,
+            'SC' => $SC,
+        ]);
+    }
+
+    public function filterTable(Request $request)
+    {
+        $this -> validate ($request,[
+            'sousCaisse' => ['required'],
+            // 'Date1' => ['required'],
+            // 'Date2' => ['required'],
+        ],$error_messages = [
+            "sousCaisse.required" => "Selectionnez la sous caisse!",
+            // "Date1.required" => "Veuillez remplir le champ date de début !",
+            // "Date2.required" => "Veuillez remplir le champ date de fin !",
+        ]);
+
+        $typeOp = $request-> type;
+        $sc = $request-> sousCaisse;
+        $Date1 = $request-> Date1;
+        $Date2 = $request-> Date2;
+        $SC = SousCaisse::all();
+
+        if($typeOp == "TOUT"){
+            if($typeOp AND !$Date1 AND !$Date2){
+                $Operation = OperationSousCaisse::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->get();
+                if($Operation -> count() > "0"){
+                    $qte_total_depot = $Operation -> where('type_op', "DEPOT")->sum('somme');
+                    $qte_total_retrait = $Operation -> where('type_op', "RETRAIT")->sum('somme');
+                    $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                    $TypeErreur = "2";
+                    $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                    return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                        'Operation' => $Operation,
+                        'SC' => $SC,
+                        'qte_total_depot' => $qte_total_depot,
+                        'qte_total_retrait' => $qte_total_retrait,
+                        'qte_restante' => $qte_restante,
+                    ]);
+
+                }else{
+                    $TypeErreur = "1";
+                    $Message= "Résultat non trouvé";
+
+                    return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                        'SC' => $SC,
+                        'qte_total_depot' => "",
+                        'qte_total_retrait' =>"" ,
+                        'qte_restante' => "",
+                    ]);
+                }
+
+            }elseif($typeOp AND $Date1 AND $Date2){
+                $ConvertDate1 = Carbon::createFromFormat('m/d/Y', $request-> Date1)->toDateString();
+                $ConvertDate2 = Carbon::createFromFormat('m/d/Y', $request-> Date2)->toDateString();
+                if($Date1 == $Date2){
+                    $Operation = OperationSousCaisse::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->whereDate('created_at', $ConvertDate1 )->get();
+
+                    if($Operation -> count() > "0"){
+                        $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
+                        $qte_total_retrait = $Operation -> where('type_operation', "RETRAIT")->sum('somme');
+                        $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                        $TypeErreur = "2";
+                        $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                        return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'SC' => $SC,
+                            'qte_total_depot' => $qte_total_depot,
+                            'qte_total_retrait' => $qte_total_retrait,
+                            'qte_restante' => $qte_restante,
+                        ]);
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "Résultat non trouvé";
+
+                        return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'SC' => $SC,
+                            'qte_total_depot' => "",
+                            'qte_total_retrait' => "",
+                            'qte_restante' => "",
+                        ]);
+                    }
+                }else{
+                    if($Date1 <=$Date2){
+                        $Operation = OperationSousCaisse::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->whereBetween('created_at', [$ConvertDate1.' 00:00:00', $ConvertDate2.' 23:59:59'])->get();
+
+                        if($Operation -> count() > "0"){
+                            $qte_total_depot = $Operation -> where('type_operation', "DEPOT")->sum('somme');
+                            $qte_total_retrait = $Operation -> where('type_operation', "RETRAIT")->sum('somme');
+                            $qte_restante = $qte_total_depot - $qte_total_retrait;
+
+                            $TypeErreur = "2";
+                            $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                            return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'SC' => $SC,
+                                'qte_total_depot' => $qte_total_depot,
+                                'qte_total_retrait' => $qte_total_retrait,
+                                'qte_restante' => $qte_restante,
+                            ]);
+                        }else{
+                            $TypeErreur = "1";
+                            $Message= "Résultat non trouvé";
+
+                            return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                                'Operation' => $Operation,
+                                'SC' => $SC,
+                                'qte_total_depot' => "",
+                                'qte_total_retrait' =>"",
+                                'qte_restante' => "",
+                            ]);
+                        }
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "La date de fin doit etre superieur a la date de debut ; Le sytème enverra la liste de toutes les opérations concernant la sous caisse choisit consultable dans le tableau ci dessous!";
+
+                        $Operation = OperationSousCaisse::orderBy('created_at', 'desc')->where('sous_caisse_id', $sc)->get();
+
+                        return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                            'Operation' => $Operation,
+                            'SC' => $SC,
+                            'qte_total_depot' => "",
+                            'qte_total_retrait' =>"",
+                            'qte_restante' => "",
+                        ]);
+                    }
+                }
+            }else{
+                $Operation = OperationSousCaisse::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->get();
+
+                $TypeErreur = "1";
+                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations concernant la sous caisse choisit consultable dans le tableau ci dessous!";
+
+                return view('sous_caisse.operation',compact('TypeErreur','Message'),[
+                    'Operation' => $Operation,
+                    'SC' => $SC,
+                    'qte_total_depot' => "",
+                    'qte_total_retrait' =>"" ,
+                    'qte_restante' => "",
+                ]);
+            }
+        }
     }
 }
