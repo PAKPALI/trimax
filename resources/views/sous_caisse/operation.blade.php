@@ -35,13 +35,17 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label for="exampleInputText0">Sous caisse</label>
-                                        <select class="form-control select2" name="sousCaisse" style="width: 100%;">
-                                            <option value="" selected="selected"></option>
-                                            @foreach($SC as $sc)
-                                                <option value="{{$sc->id}}">{{$sc->nom}}</option>
-                                            @endforeach
-                                        </select>
+                                        @if(Auth::user()->type_user == 1)
+                                            <label for="exampleInputText0">Sous caisse</label>
+                                            <select class="form-control select2" name="sousCaisse" style="width: 100%;">
+                                                <option value="" selected="selected"></option>
+                                                @foreach($SC as $sc)
+                                                    <option value="{{$sc->id}}">{{$sc->nom}}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <input type="hidden" name="sousCaisse" value="{{Auth::user()->sous_caisse_id}}" class="form-control" placeholder="">
+                                        @endif
                                     </div>
                                     <input type="hidden" name="type" value="TOUT" class="form-control" placeholder="">
                                 </div>

@@ -571,4 +571,128 @@ class SousCaisseController extends Controller
             }
         }
     }
+
+    public function operation_depense()
+    {
+        $TypeErreur = "";
+        $Message= "";
+
+        $Depense = Depense::all();
+        $SC = SousCaisse::all();
+        return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+            'Depense' => $Depense,
+            'SC' => $SC,
+        ]);
+    }
+
+    public function filterTableDepense(Request $request)
+    {
+        $this -> validate ($request,[
+            'sousCaisse' => ['required'],
+            'type_depense' => ['required'],
+            // 'Date1' => ['required'],
+            // 'Date2' => ['required'],
+        ],$error_messages = [
+            "sousCaisse.required" => "Selectionnez la sous caisse!",
+            "type_depense.required" => "Selectionnez le type de depense!",
+            // "Date1.required" => "Veuillez remplir le champ date de début !",
+            // "Date2.required" => "Veuillez remplir le champ date de fin !",
+        ]);
+
+        $typeDep = $request-> type_depense;
+        $sc = $request-> sousCaisse;
+        $Date1 = $request-> Date1;
+        $Date2 = $request-> Date2;
+        $SC = SousCaisse::all();
+        $Depense = Depense::all();
+
+        if($typeDep == "0" or $typeDep == "1" or $typeDep == "2"){
+            if(!$Date1 AND !$Date2){
+                $Depense = Depense::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->where('status', $typeDep)->get();
+                if($Depense -> count() > "0"){
+                    $TypeErreur = "2";
+                    $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                    return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                        'SC' => $SC,
+                        'Depense' => $Depense,
+                    ]);
+                }else{
+                    $TypeErreur = "1";
+                    $Message= "Résultat non trouvé";
+
+                    return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                        'SC' => $SC,
+                        'Depense' => $Depense,
+                    ]);
+                }
+
+            }elseif($Date1 AND $Date2){
+                $ConvertDate1 = Carbon::createFromFormat('m/d/Y', $request-> Date1)->toDateString();
+                $ConvertDate2 = Carbon::createFromFormat('m/d/Y', $request-> Date2)->toDateString();
+                if($Date1 == $Date2){
+                    $Depense = Depense::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->where('status', $typeDep)->whereDate('created_at', $ConvertDate1 )->get();
+                    
+                    if($Depense -> count() > "0"){
+                        $TypeErreur = "2";
+                        $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                        return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                            'Depense' => $Depense,
+                            'SC' => $SC,
+                        ]);
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "Résultat non trouvé";
+
+                        return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                            'Depense' => $Depense,
+                            'SC' => $SC,
+                        ]);
+                    }
+                }else{
+                    if($Date1 <=$Date2){
+                        $Depense = Depense::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->where('status', $typeDep)->whereBetween('created_at', [$ConvertDate1.' 00:00:00', $ConvertDate2.' 23:59:59'])->get();
+                        if($Depense -> count() > "0"){
+                            $TypeErreur = "2";
+                            $Message= "Résultat trouvé! consultez le tableau en dessous!";
+
+                            return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                                'Depense' => $Depense,
+                                'SC' => $SC,
+                            ]);
+                        }else{
+                            $TypeErreur = "1";
+                            $Message= "Résultat non trouvé";
+
+                            return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                                'Depense' => $Depense,
+                                'SC' => $SC,
+                            ]);
+                        }
+                    }else{
+                        $TypeErreur = "1";
+                        $Message= "La date de fin doit etre superieur a la date de debut pour un meilleur rendement; Le sytème enverra la liste de toutes les opérations de demande de depense concernant la sous caisse et le type de depense choisit consultable dans le tableau ci dessous!";
+
+                        $Depense = Depense::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->where('status', $typeDep)->get();
+
+                        return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                            'Depense' => $Depense,
+                            'SC' => $SC,
+                        ]);
+                    }
+                }
+            }else{
+                $Depense = Depense::orderBy('created_at', 'desc')-> where('sous_caisse_id', $sc)->where('status', $typeDep)->get();
+
+                $TypeErreur = "1";
+                $Message = "Les deux champs Date de début et Date de fin doivent être rempli pour un meilleur rendement! Le sytème enverra la liste de toutes les opérations de demande de depense concernant la sous caisse et le type de depense choisit consultable dans le tableau ci dessous!";
+
+                return view('sous_caisse.operation_depense',compact('TypeErreur','Message'),[
+                    'Depense' => $Depense,
+                    'SC' => $SC,
+                ]);
+            }
+        }
+    }
 }

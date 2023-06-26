@@ -86,6 +86,7 @@ Route::group(['prefix' => 'sous_caisse'], function () {
     Route::get('', [SousCaisseController::class, "sous_caisse"])->name('sous_caisse');
     Route::get('demande_depense', [SousCaisseController::class, "demande_depense"])->name('sous_caisse.demande_depense');
     Route::get('operation_sous_caisse', [SousCaisseController::class, "operation"])->name('sous_caisse.operation');
+    Route::get('operation_depense', [SousCaisseController::class, "operation_depense"])->name('sous_caisse.operation_depense');
 
     //post
     Route::post('ajouter', [SousCaisseController::class, "ajouter"]);
@@ -97,6 +98,7 @@ Route::group(['prefix' => 'sous_caisse'], function () {
     Route::post('valider_depense', [SousCaisseController::class, 'valider_depense']);
     Route::post('rejeter_depense', [SousCaisseController::class, 'rejeter_depense']);
     Route::post('filterTable', [SousCaisseController::class, 'filterTable'])->name('filterTableSousCaisse');
+    Route::post('filterTableDepense', [SousCaisseController::class, 'filterTableDepense'])->name('filterTableSousCaisseDepense');
 });
 
 // user
