@@ -7,6 +7,7 @@ use App\Http\Controllers\PaysController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BanqueController;
 use App\Http\Controllers\CaisseController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SousCaisseController;
 use App\Http\Controllers\TypeDepenseController;
 
@@ -115,9 +116,17 @@ Route::group(['prefix' => 'utilisateurs'], function () {
     Route::post('status', [UserController::class, 'status']);
     Route::post('delete', [UserController::class, 'delete']);
 });
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// user
+Route::group(['prefix' => 'clients'], function () {
+    // Get
+    Route::get('', [ClientController::class, 'client'])->name('client');
+
+    //post
+    Route::post('ajouter', [ClientController::class, "ajouter"]);
+    Route::post('update', [ClientController::class, 'update']);
+    Route::post('delete', [ClientController::class, 'delete']);
+});
 
 Auth::routes();
 
