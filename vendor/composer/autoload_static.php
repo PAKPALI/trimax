@@ -561,6 +561,7 @@ class ComposerStaticInit1b1f849eea3dc4a8e316e3a8ed974310
         'App\\Models\\Client' => __DIR__ . '/../..' . '/app/Models/Client.php',
         'App\\Models\\Depense' => __DIR__ . '/../..' . '/app/Models/Depense.php',
         'App\\Models\\OperationCaisse' => __DIR__ . '/../..' . '/app/Models/OperationCaisse.php',
+        'App\\Models\\OperationClient' => __DIR__ . '/../..' . '/app/Models/OperationClient.php',
         'App\\Models\\OperationSousCaisse' => __DIR__ . '/../..' . '/app/Models/OperationSousCaisse.php',
         'App\\Models\\Pays' => __DIR__ . '/../..' . '/app/Models/Pays.php',
         'App\\Models\\SousCaisse' => __DIR__ . '/../..' . '/app/Models/SousCaisse.php',

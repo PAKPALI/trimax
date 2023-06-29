@@ -121,11 +121,13 @@ Route::group(['prefix' => 'utilisateurs'], function () {
 Route::group(['prefix' => 'clients'], function () {
     // Get
     Route::get('', [ClientController::class, 'client'])->name('client');
+    Route::get('pret', [ClientController::class, "pret"])->name('client.pret');
 
     //post
     Route::post('ajouter', [ClientController::class, "ajouter"]);
     Route::post('update', [ClientController::class, 'update']);
     Route::post('delete', [ClientController::class, 'delete']);
+    Route::post('pret', [ClientController::class, "ajouterPret"]);
 });
 
 Auth::routes();

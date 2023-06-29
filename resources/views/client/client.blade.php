@@ -131,7 +131,7 @@
                                     <td>{{$n++}}</td>
                                     <td>{{strtoupper($c->nom)}}</td>
                                     <td>{{strtoupper($c->prenom)}}</td>
-                                    <td>{{$c->somme}}</td>
+                                    <td class="text-danger">{{$c->somme}}</td>
                                     <td>{{strtoupper($c->tel)}}</td>
                                     <td>{{strtoupper($c->quartier)}}</td>
                                     <td>{{$c->created_at}}</td>

@@ -38,6 +38,7 @@ return array(
     'App\\Models\\Client' => $baseDir . '/app/Models/Client.php',
     'App\\Models\\Depense' => $baseDir . '/app/Models/Depense.php',
     'App\\Models\\OperationCaisse' => $baseDir . '/app/Models/OperationCaisse.php',
+    'App\\Models\\OperationClient' => $baseDir . '/app/Models/OperationClient.php',
     'App\\Models\\OperationSousCaisse' => $baseDir . '/app/Models/OperationSousCaisse.php',
     'App\\Models\\Pays' => $baseDir . '/app/Models/Pays.php',
     'App\\Models\\SousCaisse' => $baseDir . '/app/Models/SousCaisse.php',

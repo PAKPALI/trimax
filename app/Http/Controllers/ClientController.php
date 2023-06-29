@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use App\Models\OperationClient;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,6 +15,16 @@ class ClientController extends Controller
         $Client = Client::all();
 
         return view('client.client',[
+            'Client' => $Client,
+        ]);
+    }
+
+    public function pret()
+    {
+        $Client = Client::all();
+        $operation = OperationClient::where('type_op', "pret") ->get();
+        return view('client.pret',[
+            'Operation' => $operation,
             'Client' => $Client,
         ]);
     }
@@ -135,6 +146,75 @@ class ClientController extends Controller
                 "reload" => true,
                 "title" => "SUPPRESSION",
                 "msg" => "Utilisateur inexistant"
+            ]);
+        }
+    }
+
+    public function ajouterPret(Request $request)
+    {
+        $error_messages = [
+            "client.required" => "Selectionnez le client",
+            "somme.required" => "Saisissez la somme!",
+            // "somme.numeric" => "La somme doit etre numerique!",
+            "confirmersomme.required" => "Confirmer la somme!",
+            "confirmersomme.numeric" => "La somme doit etre numerique!",
+            "desc.required" => "Saisissez la description!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'client' => ['required'],
+            'somme' => ['required'],
+            'confirmersomme' => ['required'],
+            'desc' => ['required'],
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+            "status" => false,
+            "reload" => false,
+            "title" => "AJOUT ECHOUE",
+            "msg" => $validator->errors()->first()]);
+
+        // requete sur la caisse
+        $client = Client::find($request-> client);
+        // on verifie voir si les sommes sont identiques
+
+        if(str_replace(" ", "", $request-> somme)>=0){
+            if(str_replace(" ", "", $request-> somme) == str_replace(" ", "", $request-> confirmersomme)){
+                $nouvelleQuantite = $client -> somme + str_replace(" ", "", $request-> somme);
+
+                $client -> update([
+                    'somme' => $nouvelleQuantite,
+                ]);
+                
+                OperationClient::create([
+                    'somme' => str_replace(" ", "", $request-> somme),
+                    'type_op' => "PRET",
+                    'client_id' => $request-> client,
+                    'desc' => $request-> desc,
+                ]);
+                // envoyez une reponse
+                return response()->json([
+                    "status" => true,
+                    "reload" => true,
+                    "redirect_to" => route('client.pret'),
+                    "title" => "PRET REUSSI",
+                    "msg" => ""
+                ]);
+            }else{
+                return response()->json([
+                    "status" => false,
+                    "redirect_to" => '',
+                    "title" => "PRET ECHOUE",
+                    "msg" => "La somme saisie est différente de la somme confirmée"
+                ]);
+            }
+        }else{
+            return response()->json([
+                "status" => false,
+                "redirect_to" => '',
+                "title" => "PRET ECHOUE",
+                "msg" => "La somme saisie ne doit pas etre inferieur a zéro"
             ]);
         }
     }
