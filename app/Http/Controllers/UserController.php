@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\SousCaisse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -316,5 +317,23 @@ class UserController extends Controller
                 "msg" => "Utilisateur inexistant"
             ]);
         }
+    }
+
+    public function outUser(Request $request)
+    {
+        $id =  $request->id;
+        // $user = User::find($id);
+
+        // Auth::logout($user);
+        $request->session()->invalidate();
+
+        return response()->json([
+            "status" => true,
+            "reload" => true,
+            "redirect_to" => route('conn'),
+            "title" => "DECONNEXION REUSSI",
+            'check' => Auth::check(),
+            "msg" => "Au revoir, a bientot"
+        ]);
     }
 }

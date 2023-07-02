@@ -26,7 +26,7 @@
             <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
             <li class="nav-item menu-open">
-              <a href="" class="nav-link active">
+              <a href="{{route('tableau')}}" class="nav-link active">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
                   Tableau de bord
@@ -201,6 +201,12 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                    <a href="{{route('client.accueil')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Acceuil</p>
+                    </a>
+                  </li>
+                <li class="nav-item">
                   <a href="{{route('client')}}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Ajouter client</p>
@@ -213,7 +219,13 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="" class="nav-link">
+                  <a href="{{route('client.remb')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Remboursement</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{route('client.operation')}}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>operation sur client</p>
                   </a>
@@ -255,7 +267,7 @@
             @if (Auth::user()->sous_caisse_id ==null)
             @else
               <li class="nav-item menu-open">
-                <a href="" class="nav-link active">
+                <a href="{{route('tableau')}}" class="nav-link active">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
                     Tableau de bord
@@ -308,6 +320,12 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
+                    <a href="{{route('client.accueil')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Accueil</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a href="" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>Ajouter client</p>
@@ -320,7 +338,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="" class="nav-link">
+                    <a href="{{route('client.operation')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>operation sur client</p>
                     </a>

@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('operation_clients', function (Blueprint $table) {
             $table->id();
-            $table ->foreignId('client_id')->nullable()->constrained();
+            $table ->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table ->foreignId('user_id')->constrained();
             $table->bigInteger('somme');
             $table->string('type_op');
             $table->longText('desc');

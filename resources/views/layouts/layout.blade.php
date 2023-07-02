@@ -36,9 +36,18 @@
     <link rel="stylesheet" href="{{asset('admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 
-    
     <!--link j-query-->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        @keyframes clignotement {
+            0% { background-color: white; }
+            50% { background-color: red; }
+            100% { background-color: white; }
+        }
+        #clignotant {
+            animation: clignotement 3s infinite;
+        }
+    </style>
 
 </head>
 
@@ -165,6 +174,53 @@
             "autoWidth": false,
             "responsive": true,
             });
+
+            //ajax pour se deconnecter
+            $('#form-logout').submit(function(){ 
+                let chemin = "connexion"
+                event.preventDefault();
+                Swal.fire({
+                    icon: "question",
+                    title: "DECONNEXION",
+                    text: "Etes vous sur de vous deconnecter?",
+                    showCancelButton: true,
+                    cancelButtonText: 'NON',
+                    confirmButtonText:  'OUI',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor:  '#3085d6',
+                }).then((result) => {
+                    if (result.isConfirmed){
+                        $.ajax({
+                            type: 'POST',
+                            url: "{{ route('outUser') }}",
+                            //enctype: 'multipart/form-data',
+                            data: $('#form-logout').serialize(),
+                            datatype: 'json',
+                            success: function (data){
+                                if (data.status)
+                                {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: data.title,
+                                        text: data.msg,
+                                    }).then(() => {
+                                        window.location.replace(chemin);
+                                    })
+                                }
+                            },
+                            error: function (data){
+                                console.log(data)
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "erreur",
+                                    timer: 3600,
+                                })
+                            }
+                        });
+                    }
+                })
+            });
+            return false;
         });
     </script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>

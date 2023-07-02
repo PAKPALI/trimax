@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>DEMANDE DE PRET</h1>
+                <h1>DEMANDE DE REMBOURSEMENT</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -26,7 +26,7 @@
 
             <div class="col-md-12">
 
-                <div class="card card-danger">
+                <div class="card card-success">
                     <div class="card-header">
                         <h3 class="card-title"><small></small></h3>
                     </div>
@@ -73,13 +73,13 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-danger">Valider</button>
+                            <button type="submit" class="btn btn-success">Valider</button>
                         </div>
                     </form>
                 </div>
 
                 <div class="card mt-5">
-                    <div class="card-header bg-danger">
+                    <div class="card-header bg-success">
                         <h2 class="card-title">LISTE DES OPERATIONS DE PRET</h2>
                     </div>
 
@@ -103,9 +103,9 @@
 
                                 @foreach($Operation as $op)
                                     <tr>
-                                        <td>{{$n++}}</td>
+                                        <td>{{$op->id}}</td>
                                         <td>{{$op->client->nom}}</td>
-                                        <td class="text-danger">{{$op->somme}}</td>
+                                        <td class="text-success">{{$op->somme}}</td>
                                         <td class="text-danger">{{strtoupper($op->client->somme) }}</td>
                                         <td>{{strtoupper($op->user->nom) }}</td>
                                         <td>{{$op->desc}}</td>
@@ -127,104 +127,104 @@
 </section>
 
 <script>
-$('#loader').hide();
-$(function() {
-    var somme = $('#somme');
     $('#loader').hide();
-    //Ajax pour ajouter depot
-    $('#depot').submit(function() {
-        event.preventDefault();
-        $('#loader').fadeIn();
-        $.ajax({
-            type: 'POST',
-            url: 'pret',
-            //enctype: 'multipart/form-data',
-            data: $('#depot').serialize(),
-            datatype: 'json',
-            success: function(data) {
-                console.log(data)
-                if (data.status) {
+    $(function() {
+        var somme = $('#somme');
+        $('#loader').hide();
+        //Ajax pour ajouter depot
+        $('#depot').submit(function() {
+            event.preventDefault();
+            $('#loader').fadeIn();
+            $.ajax({
+                type: 'POST',
+                url: 'remb',
+                //enctype: 'multipart/form-data',
+                data: $('#depot').serialize(),
+                datatype: 'json',
+                success: function(data) {
+                    console.log(data)
+                    if (data.status) {
+                        Swal.fire({
+                            icon: "success",
+                            title: data.title,
+                            text: data.msg,
+                        }).then(() => {
+                            if (data.redirect_to != null) {
+                                window.location.assign(data.redirect_to)
+                            } else {
+                                window.location.reload()
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: data.title,
+                            text: data.msg,
+                            icon: 'error',
+                            confirmButtonText: "D'accord",
+                            confirmButtonColor: '#A40000',
+                        })
+                    }
+                },
+                error: function(data) {
+                    console.log(data)
                     Swal.fire({
-                        icon: "success",
-                        title: data.title,
-                        text: data.msg,
-                    }).then(() => {
-                        if (data.redirect_to != null) {
-                            window.location.assign(data.redirect_to)
-                        } else {
-                            window.location.reload()
-                        }
-                    })
-                } else {
-                    Swal.fire({
-                        title: data.title,
-                        text: data.msg,
-                        icon: 'error',
-                        confirmButtonText: "D'accord",
-                        confirmButtonColor: '#A40000',
+                        icon: "error",
+                        title: "erreur",
+                        text: "Impossible de communiquer avec le serveur.",
+                        timer: 3600,
                     })
                 }
-            },
-            error: function(data) {
-                console.log(data)
-                Swal.fire({
-                    icon: "error",
-                    title: "erreur",
-                    text: "Impossible de communiquer avec le serveur.",
-                    timer: 3600,
-                })
+            });
+            $('#loader').fadeOut(3000);
+            return false;
+        });
+
+        function formatNumberWithSpaces(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        var input = document.getElementById("somme");
+        input.addEventListener("input", function() {
+            var value = input.value;
+            
+            // Supprimer les espaces existants (facultatif)
+            value = value.replace(/\s/g, "");
+
+            // Convertir la valeur en nombre entier
+            var intValue = parseInt(value, 10);
+
+            // Vérifier si la valeur est un nombre valide
+            if (!isNaN(intValue)) {
+                // Formater la valeur avec des espaces
+                var formattedValue = formatNumberWithSpaces(intValue);
+                // alert(formattedValue)
+
+                // Afficher la valeur formatée dans le champ de saisie
+                input.value = formattedValue;
             }
         });
-        $('#loader').fadeOut(3000);
-        return false;
+
+        var input1 = document.getElementById("c.somme");
+        input1.addEventListener("input", function() {
+            var value = input1.value;
+            
+            // Supprimer les espaces existants (facultatif)
+            value = value.replace(/\s/g, "");
+
+            // Convertir la valeur en nombre entier
+            var intValue = parseInt(value, 10);
+
+            // Vérifier si la valeur est un nombre valide
+            if (!isNaN(intValue)) {
+                // Formater la valeur avec des espaces
+                var formattedValue = formatNumberWithSpaces(intValue);
+                // alert(formattedValue)
+
+                // Afficher la valeur formatée dans le champ de saisie
+                input1.value = formattedValue;
+            }
+        });
     });
-
-    function formatNumberWithSpaces(number) {
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
-
-    var input = document.getElementById("somme");
-    input.addEventListener("input", function() {
-        var value = input.value;
-        
-        // Supprimer les espaces existants (facultatif)
-        value = value.replace(/\s/g, "");
-
-        // Convertir la valeur en nombre entier
-        var intValue = parseInt(value, 10);
-
-        // Vérifier si la valeur est un nombre valide
-        if (!isNaN(intValue)) {
-            // Formater la valeur avec des espaces
-            var formattedValue = formatNumberWithSpaces(intValue);
-            // alert(formattedValue)
-
-            // Afficher la valeur formatée dans le champ de saisie
-            input.value = formattedValue;
-        }
-    });
-
-    var input1 = document.getElementById("c.somme");
-    input1.addEventListener("input", function() {
-        var value = input1.value;
-        
-        // Supprimer les espaces existants (facultatif)
-        value = value.replace(/\s/g, "");
-
-        // Convertir la valeur en nombre entier
-        var intValue = parseInt(value, 10);
-
-        // Vérifier si la valeur est un nombre valide
-        if (!isNaN(intValue)) {
-            // Formater la valeur avec des espaces
-            var formattedValue = formatNumberWithSpaces(intValue);
-            // alert(formattedValue)
-
-            // Afficher la valeur formatée dans le champ de saisie
-            input1.value = formattedValue;
-        }
-    });
-});
 </script>
 
 </div>
