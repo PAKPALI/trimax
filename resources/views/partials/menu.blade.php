@@ -179,13 +179,13 @@
                   <li class="nav-item">
                     <a href="{{route('caisse.depot')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Dépot</p>
+                      <p>Entrée</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a  href="{{route('caisse.retrait')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Retrait</p>
+                      <p>Sortie</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -209,13 +209,13 @@
                   <li class="nav-item">
                     <a href="{{route('caisse.depot')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Dépot</p>
+                      <p>Entrée</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a  href="{{route('caisse.retrait')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Retrait</p>
+                      <p>Sortie</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -377,7 +377,7 @@
                   <li class="nav-item">
                     <a href="{{route('client.pret')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Demande de pret</p>
+                      <p>Credit accordé</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -419,7 +419,7 @@
                   <li class="nav-item">
                     <a href="{{route('client.pret')}}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Demande de pret</p>
+                      <p>Credit accordé</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -595,7 +595,7 @@
                     <li class="nav-item">
                       <a href="{{route('client.pret')}}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Demande de pret</p>
+                        <p>Credit accordé</p>
                       </a>
                     </li>
                     <li class="nav-item">
@@ -631,7 +631,7 @@
                     <li class="nav-item">
                       <a href="{{route('client')}}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Ajouter client</p>
+                        <p>Credit accordé</p>
                       </a>
                     </li>
                     <li class="nav-item">

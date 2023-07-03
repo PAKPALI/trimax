@@ -80,7 +80,7 @@
 
                 <div class="card mt-5">
                     <div class="card-header bg-success">
-                        <h2 class="card-title">LISTE DES OPERATIONS DE PRET</h2>
+                        <h2 class="card-title">LISTE DES OPERATIONS DE REMBOURSEMENT</h2>
                     </div>
 
                     <div class="card-body">
