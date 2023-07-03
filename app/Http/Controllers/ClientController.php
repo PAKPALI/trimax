@@ -94,7 +94,7 @@ class ClientController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update( Request $request)
     {
         $error_messages = [
             "nom.required" => "Remplir le champ Nom!",

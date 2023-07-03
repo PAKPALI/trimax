@@ -69,7 +69,7 @@
             $('#loader').fadeIn();
             $.ajax({
                 type: 'POST',
-                url: 'utilisateurs/ajouter_admin',
+                url: "{{route('ajouter_admin')}}",
                 //enctype: 'multipart/form-data',
                 data: $('#add').serialize(),
                 datatype: 'json',

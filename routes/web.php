@@ -25,6 +25,8 @@ Route::get('', function () {
     }
 });
 
+Route::post('ajouter_admin', [UserController::class, "ajouter_admin"])->name('ajouter_admin');
+
 Route::get('connexion', function () {
     return view('auth.login');
 })->name('conn');
