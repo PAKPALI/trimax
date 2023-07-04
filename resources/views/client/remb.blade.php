@@ -89,7 +89,7 @@
                                 <tr>
                                     <th>N*</th>
                                     <th>Client</th>
-                                    <th>Somme du pret</th>
+                                    <th>Somme remboursée</th>
                                     <th>Compte client</th>
                                     <th>Utilisateur</th>
                                     <th>Description</th>

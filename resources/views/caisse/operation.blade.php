@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>HISTORIQUE DES OPERATIONS</h1>
+                <h1>HISTORIQUE DES OPERATIONS CAISSE</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -29,7 +29,7 @@
                         <h3 class="card-title"><small></small></h3>
                     </div>
 
-                    <form action="{{ route('filterTable') }}" method="post">
+                    <form action="{{ route('filterTableCaisse') }}" method="post">
                         @csrf
                         <div class="card-body">
                             <div class="row">
@@ -38,9 +38,9 @@
                                         <label for="exampleInputText0">Type d'operation</label>
                                         <select class="form-control select2" name="type" style="width: 100%;">
                                             <option value="" selected="selected"></option>
-                                            <option value="TOUT">DEPOT ET RETRAIT</option>
-                                            <option value="DEPOT">DEPOT</option>
-                                            <option value="RETRAIT">RETRAIT</option>
+                                            <option value="TOUT">ENTREE ET SORTIE</option>
+                                            <option value="DEPOT">ENTREE</option>
+                                            <option value="RETRAIT">SORTIE</option>
                                         </select>
                                     </div>
                                 </div>

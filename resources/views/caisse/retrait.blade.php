@@ -25,7 +25,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>RETRAIT</h1>
+                <h1>SORTIE</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -96,7 +96,7 @@
 
                 <div class="card mt-5">
                     <div class="card-header bg-danger">
-                        <h2 class="card-title">LISTE DES OPERATIONS DE RETRAIT</h2>
+                        <h2 class="card-title">LISTE DES OPERATIONS DE SORTIE</h2>
                     </div>
 
                     <div class="card-body">

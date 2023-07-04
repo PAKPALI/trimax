@@ -79,7 +79,7 @@ Route::prefix('caisse')->middleware(['auth'])->group(function () {
     //post
     Route::post('depot', [CaisseController::class, "ajoutDepot"]);
     Route::post('retrait', [CaisseController::class, "ajoutRetrait"]);
-    Route::post('filterTable', [CaisseController::class, 'filterTable'])->name('filterTable');
+    Route::post('filterTableCaisse', [CaisseController::class, 'filterTable'])->name('filterTableCaisse');
 });
 
 

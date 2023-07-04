@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>DEMANDE DE PRET</h1>
+                <h1>DEMANDE DE CREDIT ACCORDE</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -80,7 +80,7 @@
 
                 <div class="card mt-5">
                     <div class="card-header bg-danger">
-                        <h2 class="card-title">LISTE DES OPERATIONS DE PRET</h2>
+                        <h2 class="card-title">LISTE DES OPERATIONS DE CREDIT ACCORDE</h2>
                     </div>
 
                     <div class="card-body">

@@ -316,6 +316,7 @@ class CaisseController extends Controller
                     $Message= "Résultat non trouvé";
 
                     return view('caisse.operation',compact('TypeErreur','Message'),[
+                        'Operation' => $Operation,
                         'qte_total_depot' => "",
                         'qte_total_retrait' =>"" ,
                         'qte_restante' => "",

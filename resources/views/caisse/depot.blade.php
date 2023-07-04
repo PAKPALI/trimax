@@ -25,7 +25,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>DEPOT</h1>
+                <h1>ENTREE</h1>
             </div>
             <div class="col-sm-6">
                 <!-- <ol class="breadcrumb float-sm-right">
@@ -96,7 +96,7 @@
 
                 <div class="card mt-5">
                     <div class="card-header bg-primary">
-                        <h2 class="card-title">LISTE DES OPERATIONS DE DEPOT</h2>
+                        <h2 class="card-title">LISTE DES OPERATIONS D'ENTREE</h2>
                     </div>
 
                     <div class="card-body">

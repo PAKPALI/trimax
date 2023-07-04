@@ -510,10 +510,10 @@ class ClientController extends Controller
         }elseif($typeOp == "PRET"){
             if($typeOp AND !$Date1 AND !$Date2){
                 $Operation = OperationClient::orderBy('created_at', 'desc')
-                ->where('client_id', $client_id)-> where('type_Op', $typeOp)->get();
+                    ->where('client_id', $client_id)-> where('type_Op', $typeOp)->get();
 
-                $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                 $somme_restante = $somme_total_pret - $somme_total_remb;
 
                 if($Operation -> count() > "0"){
@@ -550,8 +550,8 @@ class ClientController extends Controller
                     ->where('client_id', $client_id)-> where('type_Op', $typeOp)
                     ->whereDate('created_at', $ConvertDate1 )->get();
 
-                    $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                    $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                    $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                    $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                     $somme_restante = $somme_total_pret - $somme_total_remb;
 
                     if($Operation -> count() > "0"){
@@ -585,8 +585,8 @@ class ClientController extends Controller
                         ->where('client_id', $client_id)->where('type_Op', $typeOp)
                         ->whereBetween('created_at', [$ConvertDate1.' 00:00:00', $ConvertDate2.' 23:59:59'])->get();
 
-                        $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                        $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                        $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                        $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                         $somme_restante = $somme_total_pret - $somme_total_remb;
 
                         if($Operation -> count() > "0"){
@@ -621,8 +621,8 @@ class ClientController extends Controller
                         $Operation = OperationClient::orderBy('created_at', 'desc')
                         ->where('client_id', $client_id)->where('type_Op', $typeOp)->get();
 
-                        $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                        $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                        $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                        $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                         $somme_restante = $somme_total_pret - $somme_total_remb;
 
                         return view('client.operation',compact('TypeErreur','Message'),[
@@ -638,8 +638,8 @@ class ClientController extends Controller
                 $Operation = OperationClient::orderBy('created_at', 'desc')
                 ->where('client_id', $client_id)->where('type_Op', $typeOp)->get();
 
-                $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                 $somme_restante = $somme_total_pret - $somme_total_remb;
 
                 $TypeErreur = "1";
@@ -658,8 +658,8 @@ class ClientController extends Controller
                 $Operation = OperationClient::orderBy('created_at', 'desc')
                 ->where('client_id', $client_id)-> where('type_Op', $typeOp)->get();
 
-                $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                 $somme_restante = $somme_total_pret - $somme_total_remb;
 
                 if($Operation -> count() > "0"){
@@ -696,8 +696,8 @@ class ClientController extends Controller
                     ->where('client_id', $client_id)-> where('type_Op', $typeOp)
                     ->whereDate('created_at', $ConvertDate1 )->get();
 
-                    $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                    $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                    $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                    $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                     $somme_restante = $somme_total_pret - $somme_total_remb;
 
                     if($Operation -> count() > "0"){
@@ -731,8 +731,8 @@ class ClientController extends Controller
                         ->where('client_id', $client_id)->where('type_Op', $typeOp)
                         ->whereBetween('created_at', [$ConvertDate1.' 00:00:00', $ConvertDate2.' 23:59:59'])->get();
 
-                        $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                        $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                        $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                        $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                         $somme_restante = $somme_total_pret - $somme_total_remb;
 
                         if($Operation -> count() > "0"){
@@ -767,8 +767,8 @@ class ClientController extends Controller
                         $Operation = OperationClient::orderBy('created_at', 'desc')
                         ->where('client_id', $client_id)->where('type_Op', $typeOp)->get();
 
-                        $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                        $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                        $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                        $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                         $somme_restante = $somme_total_pret - $somme_total_remb;
 
                         return view('client.operation',compact('TypeErreur','Message'),[
@@ -784,8 +784,8 @@ class ClientController extends Controller
                 $Operation = OperationClient::orderBy('created_at', 'desc')
                 ->where('client_id', $client_id)->where('type_Op', $typeOp)->get();
 
-                $somme_total_pret = $Operation -> where('type_op', "PRET")->sum('somme');
-                $somme_total_remb = $Operation -> where('type_op', "REMB")->sum('somme');
+                $somme_total_pret = OperationClient::where('client_id', $client_id) -> where('type_op', "PRET")->sum('somme');
+                $somme_total_remb = OperationClient::where('client_id', $client_id) -> where('type_op', "REMB")->sum('somme');
                 $somme_restante = $somme_total_pret - $somme_total_remb;
 
                 $TypeErreur = "1";

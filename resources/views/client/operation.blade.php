@@ -49,8 +49,8 @@
                                         <label for="exampleInputText0">Type d'operation</label>
                                         <select class="form-control select2" name="type" style="width: 100%;">
                                             <option value="" selected="selected"></option>
-                                            <option value="TOUT">PRET ET REMBOURSEMENT</option>
-                                            <option value="PRET">PRET</option>
+                                            <option value="TOUT">CREDIT ACCORDE ET REMBOURSEMENT</option>
+                                            <option value="PRET">CREDIT ACCORDE</option>
                                             <option value="REMB">REMBOURSEMENT</option>
                                         </select>
                                     </div>
