@@ -108,6 +108,7 @@ Route::prefix('sous_caisse')->middleware(['auth'])->group(function () {
 Route::prefix('utilisateurs')->middleware(['auth'])->group(function () {
     // Get
     Route::get('', [UserController::class, 'user'])->name('user');
+    Route::get('profil', [UserController::class, 'profil'])->name('profil');
 
     //post
     Route::post('ajouter', [UserController::class, "ajouter"]);
@@ -117,6 +118,7 @@ Route::prefix('utilisateurs')->middleware(['auth'])->group(function () {
     Route::post('connected', [UserController::class, 'connected']);
     Route::post('status', [UserController::class, 'status']);
     Route::post('delete', [UserController::class, 'delete']);
+    Route::post('updatePassword', [UserController::class, 'updatePassword']);
 });
 
 // user

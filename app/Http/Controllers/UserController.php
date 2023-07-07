@@ -23,6 +23,80 @@ class UserController extends Controller
         ]);
     }
 
+    public function profil()
+    {
+
+        return view('profil');
+    }
+
+    public function updatePassword(Request $request)
+    {
+
+        $error_messages = [
+            "AM.required" => "Remplir le champ ancien mot de passe!",
+            "NM.required" => "Remplir le champ nouveau mot de passe!",
+            "CM.required" => "Remplir le champ confirmer mot de passe!",
+            "NM.min" => "Le nouveau mot de passe doit comporter au moins 8 caracteres!",
+        ];
+
+        $validator = Validator::make($request->all(),[
+            'AM' => ['required', 'min:8'],
+            'NM' => ['required', 'min:8'],
+            'CM' => ['required', 'min:8'],
+        ], $error_messages);
+
+        if($validator->fails())
+            return response()->json([
+            "status" => false,
+            "reload" => false,
+            "title" => "CONNECTION ECHOUEE",
+            "msg" => $validator->errors()->first()]);
+
+        $id = $request-> id;
+        $User = User::find($id);
+
+        if(Hash::check($request-> AM, $User-> password)){
+
+            if($request-> NM == $request-> CM){
+                $search = User::find($id);
+                if($search){
+                    $search -> update([
+                        'password' =>  Hash::make($request-> CM)
+                    ]);
+                    return response()->json([
+                        "status" => true,
+                        "reload" => true,
+                        "redirect_to" => "0",
+                        "title" => "MIS A JOUR REUSSIE",
+                        "msg" => "Mis a jour reussie"
+                    ]);
+                }
+            }else{
+
+                return response()->json([
+
+                    "status" => false,
+                    "reload" => false,
+                    "title" => "CONNECTION ECHOUE",
+                    "msg" => "Le nouveau mot de passe et la confirmation du mot de passe sont différents"
+    
+                ]);
+
+            }
+
+        }else{
+
+            return response()->json([
+
+                "status" => false,
+                "reload" => false,
+                "title" => "CONNECTION ECHOUE",
+                "msg" => "L'ancien mot de passe saisie ne correspond pas au mot de passe enregistré dans la base de donnée"
+
+            ]);
+        }
+    }
+
     public function ajouter(Request $request)
     {
         $error_messages = [
